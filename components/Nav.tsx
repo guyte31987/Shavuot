@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 const tabs = [
   { href: "/", label: "Details" },
   { href: "/about", label: "About Shavuot" },
-  { href: "/bring", label: "What to Bring" },
+  { href: "/bring", label: "Potluck" },
   { href: "/profile", label: "My Profile" },
-  { href: "/attendees", label: "Attendees" },
   { href: "/schedule", label: "Schedule" },
   { href: "/admin", label: "Admin" },
 ];

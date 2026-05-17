@@ -1,10 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Small private invite app: anyone with the URL can read/write their own
-    // attendee doc, and read the list. Photos are inlined as small JPEG
-    // data URLs (resized client-side) so size stays well under the 1MB
-    // per-doc limit.
+    // Small private invite app: anyone with the URL can read and write.
+    // Photos are inlined as small JPEG data URLs (resized client-side) so
+    // size stays well under the 1MB per-doc limit.
     match /attendees/{id} {
       allow read: if true;
       allow create, update: if
@@ -13,6 +12,17 @@ service cloud.firestore {
         && request.resource.data.name.size() > 0
         && request.resource.data.name.size() < 80;
       allow delete: if true;
+    }
+
+    // Potluck items live in their own collection so anyone can pick them up
+    // and drop them on anyone's name.
+    match /items/{id} {
+      allow read: if true;
+      allow create: if
+        request.resource.data.label is string
+        && request.resource.data.label.size() > 0
+        && request.resource.data.label.size() < 200;
+      allow update, delete: if true;
     }
   }
 }

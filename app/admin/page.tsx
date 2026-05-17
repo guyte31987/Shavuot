@@ -1,16 +1,23 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { EVENT } from "@/lib/event";
-import { deleteAttendee, subscribeAttendees } from "@/lib/store";
-import type { Attendee } from "@/lib/types";
+import { deleteAttendee, subscribeAttendees, subscribeItems } from "@/lib/store";
+import type { Attendee, Item } from "@/lib/types";
 
 const PW_KEY = "shavuot.admin";
+
+const JEWISH_LABEL: Record<string, string> = {
+  "jewish": "Jewish",
+  "jew-ally": "Jew-ally",
+  "other": "Other",
+  "": "—",
+};
 
 export default function AdminPage() {
   const [pw, setPw] = useState("");
   const [authed, setAuthed] = useState(false);
   const [attendees, setAttendees] = useState<Attendee[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<Item[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -23,12 +30,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!authed) return;
-    setLoading(true);
-    const unsub = subscribeAttendees((list) => {
-      setAttendees(list);
-      setLoading(false);
-    });
-    return unsub;
+    const ua = subscribeAttendees(setAttendees);
+    const ui = subscribeItems(setItems);
+    return () => { ua(); ui(); };
   }, [authed]);
 
   async function del(id: string) {
@@ -41,15 +45,13 @@ export default function AdminPage() {
     }
   }
 
-  const byCategory = useMemo(() => {
-    const groups: Record<string, Attendee[]> = {};
-    for (const a of attendees) {
-      if (!a.bringing?.trim()) continue;
-      const key = a.bringingCategory || "Uncategorised";
-      (groups[key] ||= []).push(a);
-    }
-    return groups;
-  }, [attendees]);
+  const itemsByAttendee = useMemo(() => {
+    const m: Record<string, Item[]> = {};
+    for (const i of items) if (i.assignedTo) (m[i.assignedTo] ||= []).push(i);
+    return m;
+  }, [items]);
+
+  const pool = items.filter((i) => !i.assignedTo);
 
   if (!authed) {
     return (
@@ -69,12 +71,7 @@ export default function AdminPage() {
           }}
         >
           <div className="field">
-            <input
-              type="password"
-              value={pw}
-              onChange={(e) => setPw(e.target.value)}
-              autoFocus
-            />
+            <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus />
           </div>
           <button className="btn" type="submit">Enter</button>
           {error && <p className="muted" style={{ color: "var(--danger)" }}>{error}</p>}
@@ -86,29 +83,15 @@ export default function AdminPage() {
   return (
     <>
       <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ margin: 0 }}>Admin · {attendees.length} attendees</h2>
-          {loading && <span className="muted">Loading…</span>}
-        </div>
+        <h2>Admin · {attendees.length} attendees · {items.length} items</h2>
       </div>
 
       <div className="card">
-        <h3>Contributions by category</h3>
-        {Object.keys(byCategory).length === 0 ? (
-          <p className="muted">No contributions yet.</p>
+        <h3>Ideas pool — still unclaimed ({pool.length})</h3>
+        {pool.length === 0 ? (
+          <p className="muted">Empty.</p>
         ) : (
-          Object.entries(byCategory).map(([cat, list]) => (
-            <div key={cat} style={{ marginBottom: 14 }}>
-              <h4 style={{ marginBottom: 4 }}>{cat}</h4>
-              <ul style={{ marginTop: 0 }}>
-                {list.map((a) => (
-                  <li key={a.id}>
-                    <strong>{a.name}</strong> — {a.bringing}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
+          <ul>{pool.map((i) => <li key={i.id}>{i.label} <span className="muted small">· added by {i.addedByName}</span></li>)}</ul>
         )}
       </div>
 
@@ -119,6 +102,7 @@ export default function AdminPage() {
             <tr>
               <th>Name</th>
               <th>Pronouns</th>
+              <th>Jewish?</th>
               <th>Food prefs</th>
               <th>Drinks</th>
               <th>Bringing</th>
@@ -131,11 +115,17 @@ export default function AdminPage() {
               <tr key={a.id}>
                 <td><strong>{a.name}</strong></td>
                 <td>{a.pronoun}</td>
+                <td>{JEWISH_LABEL[a.jewish ?? ""] ?? "—"}</td>
                 <td>{a.foodPreference}</td>
                 <td>{a.drinkPreference}</td>
                 <td>
-                  {a.bringingCategory && <em>{a.bringingCategory}: </em>}
-                  {a.bringing}
+                  {(itemsByAttendee[a.id] || []).map((i) => i.label).join(", ")}
+                  {a.bringing?.trim() && (
+                    <>
+                      {(itemsByAttendee[a.id] || []).length > 0 && " · "}
+                      <em>{a.bringing}</em>
+                    </>
+                  )}
                 </td>
                 <td className="muted">
                   {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "—"}

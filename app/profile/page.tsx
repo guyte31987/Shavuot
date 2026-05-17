@@ -2,24 +2,14 @@
 import { useEffect, useState } from "react";
 import { SignIn } from "@/components/SignIn";
 import { fetchAttendee, saveAttendee } from "@/lib/store";
-
-const CATEGORIES = [
-  "Main dish",
-  "Side / Salad",
-  "Cheese / Dairy",
-  "Dessert",
-  "Bread / Pastry",
-  "Drinks",
-  "Other",
-];
+import type { Jewishness } from "@/lib/types";
 
 function ProfileForm({ id, name }: { id: string; name: string }) {
   const [pronoun, setPronoun] = useState("");
+  const [jewish, setJewish] = useState<Jewishness>("");
   const [photoDataUrl, setPhotoDataUrl] = useState("");
   const [foodPreference, setFoodPreference] = useState("");
   const [drinkPreference, setDrinkPreference] = useState("");
-  const [bringing, setBringing] = useState("");
-  const [bringingCategory, setBringingCategory] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [loading, setLoading] = useState(true);
 
@@ -29,11 +19,10 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
         const a = await fetchAttendee(id);
         if (a) {
           setPronoun(a.pronoun ?? "");
+          setJewish((a.jewish ?? "") as Jewishness);
           setPhotoDataUrl(a.photoDataUrl ?? "");
           setFoodPreference(a.foodPreference ?? "");
           setDrinkPreference(a.drinkPreference ?? "");
-          setBringing(a.bringing ?? "");
-          setBringingCategory(a.bringingCategory ?? "");
         }
       } catch (e) {
         console.error(e);
@@ -54,10 +43,12 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
     e.preventDefault();
     setStatus("saving");
     try {
+      const existing = await fetchAttendee(id);
       await saveAttendee({
-        id, name, pronoun, photoDataUrl,
+        id, name, pronoun, jewish, photoDataUrl,
         foodPreference, drinkPreference,
-        bringing, bringingCategory,
+        bringing: existing?.bringing ?? "",
+        bringingCategory: existing?.bringingCategory ?? "",
       });
       setStatus("saved");
     } catch (e) {
@@ -71,7 +62,7 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
 
   return (
     <form onSubmit={save} className="card">
-      <h2>My profile</h2>
+      <h2>My profile <span className="heb-small">· הפרופיל שלי</span></h2>
 
       <div className="row">
         <div className="field">
@@ -87,6 +78,16 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
             onChange={(e) => setPronoun(e.target.value)}
           />
         </div>
+      </div>
+
+      <div className="field">
+        <label>Jewish or Jew-ally?</label>
+        <select value={jewish} onChange={(e) => setJewish(e.target.value as Jewishness)}>
+          <option value="">— pick one —</option>
+          <option value="jewish">Jewish 🕎</option>
+          <option value="jew-ally">Jew-ally (friend of the tribe) 💛</option>
+          <option value="other">Other / prefer not to say</option>
+        </select>
       </div>
 
       <div className="field">
@@ -120,30 +121,9 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
         </div>
       </div>
 
-      <h3 style={{ marginTop: 24 }}>What I'm bringing</h3>
-      <div className="row">
-        <div className="field">
-          <label>Category</label>
-          <select
-            value={bringingCategory}
-            onChange={(e) => setBringingCategory(e.target.value)}
-          >
-            <option value="">— pick one —</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-        </div>
-        <div className="field">
-          <label>What exactly?</label>
-          <input
-            type="text"
-            placeholder="e.g. spinach quiche for 8"
-            value={bringing}
-            onChange={(e) => setBringing(e.target.value)}
-          />
-        </div>
-      </div>
+      <p className="muted small">
+        What you're bringing lives on the <strong>Potluck</strong> tab now.
+      </p>
 
       <button className="btn" type="submit" disabled={status === "saving"}>
         {status === "saving" ? "Saving…" : status === "saved" ? "Saved ✓" : "Save profile"}
