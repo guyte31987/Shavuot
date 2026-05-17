@@ -187,23 +187,27 @@ const CSS = `
     font-weight: 600; font-style: italic;
     color: #ffffff;
     line-height: 0.92;
-    font-size: clamp(56px, 17vw, 100px);
+    font-size: clamp(38px, 10vw, 68px);
     letter-spacing: -0.01em;
     text-shadow:
       0 2px 0 rgba(80, 50, 10, 0.2),
       0 8px 24px rgba(80, 50, 10, 0.28),
       0 0 1px rgba(255,255,255,0.5);
     -webkit-text-stroke: 1px rgba(168, 115, 26, 0.28);
+    white-space: nowrap;
   }
   .shavuot-header .sh-title .strap {
     font-family: "DM Mono", monospace;
-    font-weight: 500;
-    font-size: clamp(10px, 2.6vw, 13px);
-    letter-spacing: 0.32em;
+    font-weight: 600;
+    font-size: clamp(14px, 3.4vw, 18px);
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.95);
-    margin-top: 12px;
-    text-shadow: 0 1px 0 rgba(80,50,10,0.22);
+    color: #ffffff;
+    margin-top: 10px;
+    padding: 6px 14px;
+    background: rgba(122, 80, 20, 0.55);
+    border-radius: 999px;
+    text-shadow: 0 1px 0 rgba(80,50,10,0.35);
   }
   .shavuot-header .sh-stalk {
     transform-box: fill-box;
