@@ -1,9 +1,13 @@
+const postcode = "E9 5TF";
+
 export const EVENT = {
   title: "Shavuot Dinner",
-  subtitle: "Celebrating the Feast of Weeks together",
+  host: "Adam",
   date: "Friday, May 22, 2026",
   time: "7:30 PM",
-  address: "TBD — host's home",
-  mapsUrl: "https://maps.google.com/?q=",
+  venue: "Flat 86, Curie House",
+  venueDetail: "between Wallis Road and Hackney Wick station",
+  postcode,
+  mapsUrl: `https://maps.google.com/?q=${encodeURIComponent(postcode)}`,
   adminPassword: "shavuot2026",
 };

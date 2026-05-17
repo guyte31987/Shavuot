@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { SignIn } from "@/components/SignIn";
+import { useSession } from "@/components/AppGate";
 import {
   addItem,
   assignItem,
@@ -10,6 +10,11 @@ import {
   subscribeItems,
 } from "@/lib/store";
 import type { Attendee, Item } from "@/lib/types";
+
+export default function BringPage() {
+  const { id, name } = useSession();
+  return <BringBoard id={id} name={name} />;
+}
 
 function BringBoard({ id, name }: { id: string; name: string }) {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
@@ -256,10 +261,3 @@ function Chip({
   );
 }
 
-export default function BringPage() {
-  return (
-    <SignIn>
-      {(session) => <BringBoard id={session.id} name={session.name} />}
-    </SignIn>
-  );
-}

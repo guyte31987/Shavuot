@@ -613,6 +613,46 @@ img.avatar { display: block; }
 
 /* ---------- Sign-in & signed-as ---------- */
 
+/* ---------- Splash gate ---------- */
+
+.splash {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 0;
+}
+.splash-card {
+  max-width: 560px;
+  width: 100%;
+  text-align: left;
+}
+.splash-card h2 { margin-top: 0; }
+.splash-host {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.splash-host strong {
+  color: var(--accent);
+  font-family: "Frank Ruhl Libre", serif;
+  font-weight: 900;
+  font-size: 1.15rem;
+}
+.splash-when {
+  font-size: 1.05rem;
+  margin: 12px 0 18px;
+  padding: 12px 14px;
+  background: #fffbe5;
+  border: 2px dashed var(--accent-2);
+  border-radius: 10px;
+}
+.splash-when a {
+  color: var(--accent-3);
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+/* ---------- Sign-in overlay (legacy small inline form) ---------- */
+
 .signin-overlay {
   background: var(--paper);
   border: 2px solid #1a1a1a;

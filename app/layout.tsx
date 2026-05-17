@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
+import { AppGate } from "@/components/AppGate";
 
 export const metadata: Metadata = {
   title: "Shavuot Dinner",
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="app">
           <Hero />
-          <Nav />
-          <main className="content">{children}</main>
+          <AppGate>
+            <Nav />
+            <main className="content">{children}</main>
+          </AppGate>
           <footer className="foot">
             <span className="heb-small">חג שמח</span>
             <span> · Chag Shavuot Sameach</span>

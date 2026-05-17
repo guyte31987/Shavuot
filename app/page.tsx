@@ -8,8 +8,8 @@ export default function HomePage() {
         <Sunflower size={64} className="card-deco-icon top-right" />
         <h2>You're invited <span className="heb-small">· הזמנה</span></h2>
         <p>
-          Join us for a warm Shavuot dinner with friends — dairy delights,
-          conversation, and a celebration of the giving of the Torah.
+          Join {EVENT.host} for a warm Shavuot dinner with friends — dairy
+          delights, conversation, and a celebration of the giving of the Torah.
         </p>
       </div>
 
@@ -26,14 +26,19 @@ export default function HomePage() {
       <div className="card card-deco">
         <CheeseWedge size={64} className="card-deco-icon top-right" />
         <h2>Where <span className="heb-small">· איפה</span></h2>
-        <p style={{ fontSize: "1.15rem", margin: "0 0 14px" }}>{EVENT.address}</p>
+        <p style={{ fontSize: "1.15rem", margin: "0 0 6px", fontWeight: 600 }}>
+          {EVENT.venue}
+        </p>
+        <p className="muted" style={{ margin: "0 0 14px" }}>
+          {EVENT.venueDetail}
+        </p>
         <a
           className="btn secondary"
-          href={`${EVENT.mapsUrl}${encodeURIComponent(EVENT.address)}`}
+          href={EVENT.mapsUrl}
           target="_blank"
           rel="noreferrer"
         >
-          Open in Maps →
+          {EVENT.postcode} · Open in Maps →
         </a>
       </div>
 
@@ -41,9 +46,9 @@ export default function HomePage() {
         <Pomegranate size={64} className="card-deco-icon top-right" />
         <h2>What to do</h2>
         <ol>
-          <li>Sign in with your name on the <strong>My Profile</strong> tab.</li>
-          <li>Tell us what you'd like to <strong>bring</strong> so we balance the table.</li>
-          <li>Peek at the <strong>schedule</strong> and the other <strong>attendees</strong>.</li>
+          <li>Pick what you'd like to <strong>bring</strong> on the Potluck tab.</li>
+          <li>Peek at the <strong>schedule</strong> for the evening.</li>
+          <li>See who else is coming on the Potluck board.</li>
         </ol>
       </div>
     </>

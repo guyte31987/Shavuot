@@ -6,7 +6,6 @@ const tabs = [
   { href: "/", label: "Details" },
   { href: "/about", label: "About Shavuot" },
   { href: "/bring", label: "Potluck" },
-  { href: "/profile", label: "My Profile" },
   { href: "/schedule", label: "Schedule" },
   { href: "/admin", label: "Admin" },
 ];
