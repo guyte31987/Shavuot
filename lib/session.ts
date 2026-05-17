@@ -3,11 +3,14 @@
 const ID_KEY = "shavuot.id";
 const NAME_KEY = "shavuot.name";
 
-function makeId(): string {
-  return (
-    Date.now().toString(36) +
-    Math.random().toString(36).slice(2, 10)
-  );
+export function nameToId(name: string): string {
+  return name
+    .normalize("NFKD")
+    .replace(/\p{M}+/gu, "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s/\\.#$[\]]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 export type Session = { id: string; name: string };
@@ -21,12 +24,9 @@ export function getSession(): Session | null {
 }
 
 export function signIn(name: string): Session {
-  const trimmed = name.trim();
-  let id = localStorage.getItem(ID_KEY);
-  if (!id) {
-    id = makeId();
-    localStorage.setItem(ID_KEY, id);
-  }
+  const trimmed = name.trim().replace(/\s+/g, " ");
+  const id = nameToId(trimmed);
+  localStorage.setItem(ID_KEY, id);
   localStorage.setItem(NAME_KEY, trimmed);
   return { id, name: trimmed };
 }
