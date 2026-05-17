@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { subscribeAttendees } from "@/lib/store";
 import type { Attendee } from "@/lib/types";
 
 export default function AttendeesPage() {
@@ -7,12 +8,11 @@ export default function AttendeesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/attendees");
-      const data = await res.json();
-      setAttendees(data.attendees ?? []);
+    const unsub = subscribeAttendees((list) => {
+      setAttendees(list);
       setLoading(false);
-    })();
+    });
+    return unsub;
   }, []);
 
   return (

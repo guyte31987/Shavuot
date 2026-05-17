@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import { EVENT } from "@/lib/event";
+import { deleteAttendee, subscribeAttendees } from "@/lib/store";
 import type { Attendee } from "@/lib/types";
 
 const PW_KEY = "shavuot.admin";
@@ -13,7 +15,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem(PW_KEY) : null;
-    if (stored) {
+    if (stored && stored === EVENT.adminPassword) {
       setPw(stored);
       setAuthed(true);
     }
@@ -22,38 +24,27 @@ export default function AdminPage() {
   useEffect(() => {
     if (!authed) return;
     setLoading(true);
-    fetch("/api/attendees")
-      .then((r) => r.json())
-      .then((d) => setAttendees(d.attendees ?? []))
-      .finally(() => setLoading(false));
+    const unsub = subscribeAttendees((list) => {
+      setAttendees(list);
+      setLoading(false);
+    });
+    return unsub;
   }, [authed]);
-
-  async function refresh() {
-    setLoading(true);
-    const res = await fetch("/api/attendees");
-    const d = await res.json();
-    setAttendees(d.attendees ?? []);
-    setLoading(false);
-  }
 
   async function del(id: string) {
     if (!confirm("Remove this attendee?")) return;
-    const res = await fetch(`/api/attendees/${id}`, {
-      method: "DELETE",
-      headers: { "x-admin-password": pw },
-    });
-    if (res.ok) refresh();
-    else {
-      setError("Delete failed — password may be wrong.");
-      setAuthed(false);
-      localStorage.removeItem(PW_KEY);
+    try {
+      await deleteAttendee(id);
+    } catch (e) {
+      console.error(e);
+      setError("Delete failed.");
     }
   }
 
   const byCategory = useMemo(() => {
     const groups: Record<string, Attendee[]> = {};
     for (const a of attendees) {
-      if (!a.bringing.trim()) continue;
+      if (!a.bringing?.trim()) continue;
       const key = a.bringingCategory || "Uncategorised";
       (groups[key] ||= []).push(a);
     }
@@ -69,8 +60,12 @@ export default function AdminPage() {
           onSubmit={(e) => {
             e.preventDefault();
             setError("");
-            localStorage.setItem(PW_KEY, pw);
-            setAuthed(true);
+            if (pw === EVENT.adminPassword) {
+              localStorage.setItem(PW_KEY, pw);
+              setAuthed(true);
+            } else {
+              setError("Wrong password.");
+            }
           }}
         >
           <div className="field">
@@ -93,9 +88,7 @@ export default function AdminPage() {
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ margin: 0 }}>Admin · {attendees.length} attendees</h2>
-          <button className="btn secondary" onClick={refresh} disabled={loading}>
-            {loading ? "Loading…" : "Refresh"}
-          </button>
+          {loading && <span className="muted">Loading…</span>}
         </div>
       </div>
 
@@ -145,7 +138,7 @@ export default function AdminPage() {
                   {a.bringing}
                 </td>
                 <td className="muted">
-                  {new Date(a.updatedAt).toLocaleString()}
+                  {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "—"}
                 </td>
                 <td>
                   <button className="btn danger" onClick={() => del(a.id)}>Remove</button>

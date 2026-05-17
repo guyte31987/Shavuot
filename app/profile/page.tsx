@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SignIn } from "@/components/SignIn";
-import type { Attendee } from "@/lib/types";
+import { fetchAttendee, saveAttendee } from "@/lib/store";
 
 const CATEGORIES = [
   "Main dish",
@@ -25,18 +25,21 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/attendees/${id}`);
-      if (res.ok) {
-        const data = await res.json();
-        const a: Attendee = data.attendee;
-        setPronoun(a.pronoun ?? "");
-        setPhotoDataUrl(a.photoDataUrl ?? "");
-        setFoodPreference(a.foodPreference ?? "");
-        setDrinkPreference(a.drinkPreference ?? "");
-        setBringing(a.bringing ?? "");
-        setBringingCategory(a.bringingCategory ?? "");
+      try {
+        const a = await fetchAttendee(id);
+        if (a) {
+          setPronoun(a.pronoun ?? "");
+          setPhotoDataUrl(a.photoDataUrl ?? "");
+          setFoodPreference(a.foodPreference ?? "");
+          setDrinkPreference(a.drinkPreference ?? "");
+          setBringing(a.bringing ?? "");
+          setBringingCategory(a.bringingCategory ?? "");
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     })();
   }, [id]);
 
@@ -50,16 +53,17 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setStatus("saving");
-    const res = await fetch("/api/attendees", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
+    try {
+      await saveAttendee({
         id, name, pronoun, photoDataUrl,
         foodPreference, drinkPreference,
         bringing, bringingCategory,
-      }),
-    });
-    setStatus(res.ok ? "saved" : "error");
+      });
+      setStatus("saved");
+    } catch (e) {
+      console.error(e);
+      setStatus("error");
+    }
     setTimeout(() => setStatus("idle"), 1800);
   }
 

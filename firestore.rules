@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Small private invite app: anyone with the URL can read/write their own
+    // attendee doc, and read the list. Photos are inlined as small JPEG
+    // data URLs (resized client-side) so size stays well under the 1MB
+    // per-doc limit.
+    match /attendees/{id} {
+      allow read: if true;
+      allow create, update: if
+        request.resource.data.id == id
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() < 80;
+      allow delete: if true;
+    }
+  }
+}
