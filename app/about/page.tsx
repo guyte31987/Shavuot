@@ -2,7 +2,7 @@ export default function AboutPage() {
   return (
     <>
       <div className="card">
-        <h2>About Shavuot</h2>
+        <h2>About Shavuot <span className="heb-small">· שָׁבוּעוֹת</span></h2>
         <p>
           <strong>Shavuot</strong> (שָׁבוּעוֹת, "Weeks") is one of the three pilgrimage
           festivals in the Hebrew calendar. It is celebrated seven weeks — fifty

@@ -22,7 +22,7 @@ export default function BringPage() {
   return (
     <>
       <div className="card">
-        <h2>What everyone's bringing</h2>
+        <h2>What everyone's bringing <span className="heb-small">· מה מביאים</span></h2>
         <p className="muted" style={{ marginTop: 0 }}>
           Update yours on the <Link href="/profile">My Profile</Link> tab.
         </p>

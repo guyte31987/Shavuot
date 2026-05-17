@@ -12,7 +12,7 @@ export default function SchedulePage() {
   return (
     <>
       <div className="card">
-        <h2>Schedule for the night</h2>
+        <h2>Schedule for the night <span className="heb-small">· סדר הערב</span></h2>
         <ul className="timeline">
           {items.map((it) => (
             <li key={it.when}>

@@ -17,7 +17,7 @@ export default function AttendeesPage() {
 
   return (
     <div className="card">
-      <h2>Attendees · {attendees.length}</h2>
+      <h2>Attendees <span className="heb-small">· האורחים</span> · {attendees.length}</h2>
       {loading ? (
         <p className="muted">Loading…</p>
       ) : attendees.length === 0 ? (
