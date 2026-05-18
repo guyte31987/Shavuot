@@ -11,12 +11,12 @@ import {
 } from "@/lib/store";
 import type { Attendee, Item } from "@/lib/types";
 
-export default function BringPage() {
+export default function DinnerPage() {
   const { id, name } = useSession();
-  return <BringBoard id={id} name={name} />;
+  return <DinnerBoard id={id} name={name} />;
 }
 
-function BringBoard({ id, name }: { id: string; name: string }) {
+function DinnerBoard({ id, name }: { id: string; name: string }) {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [newLabel, setNewLabel] = useState("");
@@ -53,13 +53,11 @@ function BringBoard({ id, name }: { id: string; name: string }) {
       await saveAttendee({
         id,
         name,
-        pronoun: "",
-        jewish: "",
-        photoDataUrl: "",
+        rsvp: "",
         foodPreference: "",
         drinkPreference: "",
+        notes: "",
         bringing: text,
-        bringingCategory: "",
       });
     } else {
       await saveAttendee({ ...me, bringing: text });
@@ -115,11 +113,7 @@ function BringBoard({ id, name }: { id: string; name: string }) {
                     onClick={() => picked && onDropOn(a.id)}
                   >
                     <div className="person-head">
-                      {a.photoDataUrl ? (
-                        <img src={a.photoDataUrl} alt="" className="avatar-mini" />
-                      ) : (
-                        <div className="avatar-mini">{a.name[0]?.toUpperCase()}</div>
-                      )}
+                      <div className="avatar-mini">{a.name[0]?.toUpperCase()}</div>
                       <div className="person-name">
                         {a.name}
                         {isMe && <span className="me-tag">you</span>}
@@ -260,4 +254,3 @@ function Chip({
     </span>
   );
 }
-

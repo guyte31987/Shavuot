@@ -1,15 +1,13 @@
-export type Jewishness = "" | "jewish" | "jew-ally" | "other";
+export type Rsvp = "" | "dinner" | "drinks" | "both" | "no";
 
 export type Attendee = {
   id: string;
   name: string;
-  pronoun: string;
-  jewish: Jewishness;
-  photoDataUrl: string;
+  rsvp: Rsvp;
   foodPreference: string;
   drinkPreference: string;
+  notes: string;
   bringing: string;
-  bringingCategory: string;
   createdAt: number;
   updatedAt: number;
 };

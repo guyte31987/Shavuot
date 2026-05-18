@@ -623,33 +623,113 @@ img.avatar { display: block; }
 .splash-card {
   max-width: 560px;
   width: 100%;
-  text-align: left;
+  text-align: center;
 }
-.splash-card h2 { margin-top: 0; }
-.splash-host {
+.splash-card .splash-title {
+  margin: 0 auto 8px;
+  display: inline-block;
+  text-align: center;
+}
+.splash-card .splash-title::after { margin-left: auto; margin-right: auto; }
+.splash-heb {
+  font-family: "Frank Ruhl Libre", serif;
+  font-weight: 900;
+  font-size: 1.6rem;
+  color: var(--accent-2);
+  margin: 6px 0 18px;
+}
+.splash-lede {
   font-size: 1.05rem;
-  margin-bottom: 4px;
-  color: var(--ink);
+  margin: 0 0 16px;
 }
-.splash-host strong {
+.splash-lede strong {
   color: var(--accent);
   font-family: "Frank Ruhl Libre", serif;
   font-weight: 900;
-  font-size: 1.15rem;
 }
 .splash-when {
-  font-size: 1.05rem;
-  margin: 12px 0 18px;
-  padding: 12px 14px;
+  font-size: 1rem;
+  margin: 0 auto 18px;
+  padding: 14px 18px;
   background: #fffbe5;
   border: 2px dashed var(--accent-2);
-  border-radius: 10px;
+  border-radius: 12px;
+  display: inline-block;
+  text-align: center;
 }
+.splash-when-row { margin: 2px 0; }
 .splash-when a {
   color: var(--accent-3);
   text-decoration: underline;
   font-weight: 700;
 }
+.splash-ask {
+  font-size: 1rem;
+  margin: 0 auto 18px;
+  max-width: 460px;
+}
+.splash-form {
+  max-width: 380px;
+  margin: 0 auto;
+  text-align: left;
+}
+.splash-form .btn { width: 100%; }
+
+/* ---------- RSVP radio cards ---------- */
+
+.rsvp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.rsvp-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 2px solid #1a1a1a;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ink);
+  font-size: 0.95rem;
+  box-shadow: 3px 3px 0 #1a1a1a;
+  transition: transform 0.08s, box-shadow 0.08s, background 0.15s;
+}
+.rsvp-opt:hover { background: #fffbe5; }
+.rsvp-opt.selected { background: var(--accent); color: #fff; }
+.rsvp-opt input { display: none; }
+.rsvp-label {
+  font-family: "Frank Ruhl Libre", serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.rsvp-sub {
+  font-size: 0.78rem;
+  opacity: 0.8;
+  margin-top: 2px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------- Admin link in footer ---------- */
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.admin-link {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-style: italic;
+  opacity: 0.7;
+}
+.admin-link:hover { color: var(--accent); opacity: 1; }
 
 /* ---------- Sign-in overlay (legacy small inline form) ---------- */
 

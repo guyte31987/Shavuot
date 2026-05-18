@@ -6,10 +6,11 @@ import type { Attendee, Item } from "@/lib/types";
 
 const PW_KEY = "shavuot.admin";
 
-const JEWISH_LABEL: Record<string, string> = {
-  "jewish": "Jewish",
-  "jew-ally": "Jew-ally",
-  "other": "Other",
+const RSVP_LABEL: Record<string, string> = {
+  "dinner": "Dinner",
+  "drinks": "Drinks",
+  "both": "Both",
+  "no": "Can't make it",
   "": "—",
 };
 
@@ -53,6 +54,19 @@ export default function AdminPage() {
 
   const pool = items.filter((i) => !i.assignedTo);
 
+  const counts = useMemo(() => {
+    const c = { dinner: 0, drinks: 0, both: 0, no: 0, undecided: 0 };
+    for (const a of attendees) {
+      const r = a.rsvp || "";
+      if (r === "dinner") c.dinner++;
+      else if (r === "drinks") c.drinks++;
+      else if (r === "both") c.both++;
+      else if (r === "no") c.no++;
+      else c.undecided++;
+    }
+    return c;
+  }, [attendees]);
+
   if (!authed) {
     return (
       <div className="signin-overlay">
@@ -83,7 +97,11 @@ export default function AdminPage() {
   return (
     <>
       <div className="card">
-        <h2>Admin · {attendees.length} attendees · {items.length} items</h2>
+        <h2>Admin · {attendees.length} signed in</h2>
+        <p className="muted small" style={{ margin: 0 }}>
+          Dinner: {counts.dinner + counts.both} · Drinks: {counts.drinks + counts.both} ·
+          Both: {counts.both} · No: {counts.no} · Undecided: {counts.undecided}
+        </p>
       </div>
 
       <div className="card">
@@ -91,7 +109,13 @@ export default function AdminPage() {
         {pool.length === 0 ? (
           <p className="muted">Empty.</p>
         ) : (
-          <ul>{pool.map((i) => <li key={i.id}>{i.label} <span className="muted small">· added by {i.addedByName}</span></li>)}</ul>
+          <ul>
+            {pool.map((i) => (
+              <li key={i.id}>
+                {i.label} <span className="muted small">· added by {i.addedByName}</span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
@@ -101,10 +125,10 @@ export default function AdminPage() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Pronouns</th>
-              <th>Jewish?</th>
+              <th>RSVP</th>
               <th>Food prefs</th>
               <th>Drinks</th>
+              <th>Notes</th>
               <th>Bringing</th>
               <th>Updated</th>
               <th></th>
@@ -114,10 +138,10 @@ export default function AdminPage() {
             {attendees.map((a) => (
               <tr key={a.id}>
                 <td><strong>{a.name}</strong></td>
-                <td>{a.pronoun}</td>
-                <td>{JEWISH_LABEL[a.jewish ?? ""] ?? "—"}</td>
+                <td>{RSVP_LABEL[a.rsvp ?? ""] ?? "—"}</td>
                 <td>{a.foodPreference}</td>
                 <td>{a.drinkPreference}</td>
+                <td>{a.notes}</td>
                 <td>
                   {(itemsByAttendee[a.id] || []).map((i) => i.label).join(", ")}
                   {a.bringing?.trim() && (

@@ -30,26 +30,33 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     return (
       <div className="splash">
         <div className="card splash-card">
-          <h2>
-            Welcome to Shavuot Dinner
-            <span className="heb-small">· ברוכים הבאים</span>
-          </h2>
-          <p className="splash-host">
-            Kindly hosted by <strong>{EVENT.host}</strong>
+          <h2 className="splash-title">Welcome to Shavuot Dinner</h2>
+          <div className="splash-heb">ברוכים הבאים</div>
+
+          <p className="splash-lede">
+            <strong>{EVENT.hosts}</strong> will be delighted to have you for a
+            casual celebration of Shavuot this Friday.
           </p>
-          <p className="splash-when">
-            <strong>{EVENT.date}</strong> · {EVENT.time}
-            <br />
-            <span className="muted">
+
+          <div className="splash-when">
+            <div className="splash-when-row">
+              <strong>{EVENT.date}</strong>
+            </div>
+            <div className="splash-when-row">
+              Dinner from {EVENT.dinnerTime} · Drinks from {EVENT.drinksTime}
+            </div>
+            <div className="splash-when-row muted">
               {EVENT.venue} ·{" "}
               <a href={EVENT.mapsUrl} target="_blank" rel="noreferrer">
                 {EVENT.postcode}
               </a>
-            </span>
-          </p>
-          <p>
-            Please sign in with your name to see all the details, let us know
-            you're joining, and pick what you'll bring for the potluck.
+            </div>
+          </div>
+
+          <p className="splash-ask">
+            Please sign in with your name to see all the details, RSVP, tell us
+            food and drink preferences, and dinner options if you're joining us
+            for that.
           </p>
 
           <form
@@ -72,6 +79,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
                 setSubmitting(false);
               }
             }}
+            className="splash-form"
           >
             <div className="field">
               <label>Your name</label>

@@ -28,8 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="content">{children}</main>
           </AppGate>
           <footer className="foot">
-            <span className="heb-small">חג שמח</span>
-            <span> · Chag Shavuot Sameach</span>
+            <div>
+              <span className="heb-small">חג שמח</span>
+              <span> · Chag Shavuot Sameach</span>
+            </div>
+            <a className="admin-link" href="/admin">*admin access</a>
           </footer>
         </div>
       </body>

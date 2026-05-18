@@ -13,6 +13,9 @@ export default function SchedulePage() {
     <>
       <div className="card">
         <h2>Schedule for the night <span className="heb-small">· סדר הערב</span></h2>
+        <p className="muted small" style={{ marginTop: 0 }}>
+          Tentative · most likely made-up · subject to vibes.
+        </p>
         <ul className="timeline">
           {items.map((it) => (
             <li key={it.when}>
