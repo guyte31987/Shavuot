@@ -1,25 +1,23 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "@/components/AppGate";
+import { ImageCropper } from "@/components/ImageCropper";
 import { addPic, deletePic, subscribePics } from "@/lib/store";
 import type { Pic } from "@/lib/types";
-
-const MAX_DIM = 1000;
-const JPEG_QUALITY = 0.82;
-const MAX_BYTES = 900_000;
 
 export default function TeeshPage() {
   const { id, name } = useSession();
   const [pics, setPics] = useState<Pic[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [pickedFile, setPickedFile] = useState<File | null>(null);
   const [pending, setPending] = useState<{ dataUrl: string; size: number } | null>(null);
   const [caption, setCaption] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => subscribePics(setPics), []);
 
-  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     setError("");
     const file = e.target.files?.[0];
     if (!file) return;
@@ -27,25 +25,19 @@ export default function TeeshPage() {
       setError("That doesn't look like an image.");
       return;
     }
-    try {
-      const dataUrl = await resizeImage(file, MAX_DIM, JPEG_QUALITY);
-      const size = dataUrl.length * 0.75; // base64 → bytes approx
-      if (size > MAX_BYTES) {
-        // try again, smaller
-        const smaller = await resizeImage(file, 800, 0.78);
-        if (smaller.length * 0.75 > MAX_BYTES) {
-          setError("That picture is too big even after resizing — try a smaller one.");
-          return;
-        }
-        setPending({ dataUrl: smaller, size: smaller.length * 0.75 });
-      } else {
-        setPending({ dataUrl, size });
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Couldn't read that file.");
-    }
+    setPickedFile(file);
     if (fileRef.current) fileRef.current.value = "";
+  }
+
+  function onCropped(dataUrl: string) {
+    setPending({ dataUrl, size: dataUrl.length * 0.75 });
+    setPickedFile(null);
+  }
+
+  function cancelAll() {
+    setPickedFile(null);
+    setPending(null);
+    setCaption("");
   }
 
   async function upload() {
@@ -90,7 +82,7 @@ export default function TeeshPage() {
         </p>
 
         <div className="teesh-upload">
-          {!pending ? (
+          {!pickedFile && !pending && (
             <label className="btn">
               Choose a photo
               <input
@@ -101,7 +93,17 @@ export default function TeeshPage() {
                 style={{ display: "none" }}
               />
             </label>
-          ) : (
+          )}
+
+          {pickedFile && (
+            <ImageCropper
+              file={pickedFile}
+              onCrop={onCropped}
+              onCancel={cancelAll}
+            />
+          )}
+
+          {pending && (
             <div className="teesh-preview">
               <img src={pending.dataUrl} alt="" />
               <div className="teesh-preview-form">
@@ -118,21 +120,19 @@ export default function TeeshPage() {
                   </button>
                   <button
                     className="btn secondary"
-                    onClick={() => {
-                      setPending(null);
-                      setCaption("");
-                    }}
+                    onClick={cancelAll}
                     disabled={busy}
                   >
                     Cancel
                   </button>
                 </div>
                 <p className="muted small" style={{ margin: 0 }}>
-                  Resized to ~{Math.round(pending.size / 1024)} KB.
+                  ~{Math.round(pending.size / 1024)} KB ready to upload.
                 </p>
               </div>
             </div>
           )}
+
           {error && <p className="muted" style={{ color: "var(--danger)" }}>{error}</p>}
         </div>
       </div>
@@ -171,28 +171,4 @@ export default function TeeshPage() {
       </div>
     </>
   );
-}
-
-function resizeImage(file: File, maxDim: number, quality: number): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-        const w = Math.round(img.width * scale);
-        const h = Math.round(img.height * scale);
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL("image/jpeg", quality));
-      };
-      img.onerror = reject;
-      img.src = reader.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }
