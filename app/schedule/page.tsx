@@ -1,12 +1,12 @@
 export default function SchedulePage() {
   const items = [
-    { when: "7:30 PM", what: "Arrival & welcome drinks", note: "Come settle in, meet the others." },
-    { when: "8:00 PM", what: "Candle lighting & Kiddush", note: "Marking the start of Shavuot together." },
+    { when: "7:00 PM (ish)", what: "Arrival & welcome drinks", note: "Come settle in, meet the others." },
+    { when: "8:00 PM", what: "Candle lighting", note: "Marking the start of Shavuot together." },
     { when: "8:15 PM", what: "Dinner is served", note: "Dairy feast — cheeses, quiches, salads, blintzes." },
     { when: "9:15 PM", what: "Reading from the Book of Ruth", note: "A short reading, a few thoughts to share." },
     { when: "9:45 PM", what: "Dessert & coffee", note: "The cheesecake moment." },
-    { when: "10:15 PM", what: "Tikkun Leil — a little study", note: "A short text and open conversation, for whoever's up for it." },
-    { when: "Late", what: "Linger, sing, drift home", note: "No rush. The night is long." },
+    { when: "10:15 PM", what: "Your favourite commandments!", note: "A short text and open conversation about your favourite commandments to hold — or break!" },
+    { when: "Late", what: "Linger, sing, drift home", note: "No rush. The night is long, the balcony is open, the spring breeze is flowing." },
   ];
 
   return (

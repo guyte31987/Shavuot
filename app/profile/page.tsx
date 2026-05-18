@@ -94,31 +94,28 @@ function ProfileForm({ id, name }: { id: string; name: string }) {
         </div>
       </div>
 
-      {(rsvp === "dinner" || rsvp === "both") && (
-        <div className="row">
-          <div className="field">
-            <label>Food preferences / allergies</label>
-            <textarea
-              placeholder="vegetarian, lactose-free, nut allergy…"
-              value={foodPreference}
-              onChange={(e) => setFoodPreference(e.target.value)}
-            />
-          </div>
-          <div className="field">
-            <label>Drink preferences</label>
-            <textarea
-              placeholder="red wine, sparkling water, no alcohol…"
-              value={drinkPreference}
-              onChange={(e) => setDrinkPreference(e.target.value)}
-            />
-          </div>
-        </div>
-      )}
+      <div className="field">
+        <label>Food preferences / allergies</label>
+        <textarea
+          placeholder="vegan, lactose-intolerant, nut allergy…"
+          value={foodPreference}
+          onChange={(e) => setFoodPreference(e.target.value)}
+        />
+      </div>
+
+      <div className="field">
+        <label>Drink preferences</label>
+        <textarea
+          placeholder="red wine, sparkling water, no alcohol…"
+          value={drinkPreference}
+          onChange={(e) => setDrinkPreference(e.target.value)}
+        />
+      </div>
 
       <div className="field">
         <label>Notes</label>
         <textarea
-          placeholder="Anything else we should know? Plus-ones, arrival time, allergies, song requests…"
+          placeholder="Anything else we should know? Plus-ones, arrival time, song requests…"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
         />

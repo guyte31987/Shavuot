@@ -55,8 +55,8 @@ export function AppGate({ children }: { children: React.ReactNode }) {
 
           <p className="splash-ask">
             Please sign in with your name to see all the details, RSVP, tell us
-            food and drink preferences, and dinner options if you're joining us
-            for that.
+            food and drink preferences (especially if vegan and/or lactose
+            intolerant), and dinner options if you're joining that part.
           </p>
 
           <form

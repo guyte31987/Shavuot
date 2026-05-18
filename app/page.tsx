@@ -9,8 +9,7 @@ export default function HomePage() {
         <h2>You're invited <span className="heb-small">· הזמנה</span></h2>
         <p>
           {EVENT.hosts} are delighted to have you for a casual celebration of
-          Shavuot this Friday — dairy delights, drinks, and a long evening of
-          conversation.
+          Shavuot this Friday — dairy delights, drinks, and camaraderie.
         </p>
       </div>
 
