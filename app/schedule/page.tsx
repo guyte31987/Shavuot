@@ -27,15 +27,6 @@ export default function SchedulePage() {
         </ul>
       </div>
 
-      <div className="card">
-        <h3>A little something extra</h3>
-        <p>
-          We'll have a short text-study moment after dessert — a single page from
-          the Book of Ruth, with a question or two. No prep needed; just curiosity.
-          Bring a thought, a memory of a Shavuot past, or a question you'd like
-          to chew on.
-        </p>
-      </div>
     </>
   );
 }

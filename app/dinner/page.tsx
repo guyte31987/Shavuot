@@ -5,7 +5,6 @@ import {
   addItem,
   assignItem,
   deleteItem,
-  saveAttendee,
   subscribeAttendees,
   subscribeItems,
 } from "@/lib/store";
@@ -22,14 +21,12 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
   const [newLabel, setNewLabel] = useState("");
   const [picked, setPicked] = useState<string | null>(null);
   const [hoverTarget, setHoverTarget] = useState<string | null>(null);
+  const [directDrafts, setDirectDrafts] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const ua = subscribeAttendees(setAttendees);
     const ui = subscribeItems(setItems);
-    return () => {
-      ua();
-      ui();
-    };
+    return () => { ua(); ui(); };
   }, []);
 
   const pool = useMemo(() => items.filter((i) => !i.assignedTo), [items]);
@@ -39,29 +36,23 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
     return map;
   }, [items]);
 
-  const me = attendees.find((a) => a.id === id);
-
-  async function add(e: React.FormEvent) {
+  async function addToPool(e: React.FormEvent) {
     e.preventDefault();
     if (!newLabel.trim()) return;
-    await addItem({ label: newLabel, addedBy: id, addedByName: name });
+    await addItem({ label: newLabel, addedBy: id, addedByName: name, assignedTo: null, origin: "pool" });
     setNewLabel("");
   }
 
-  async function quickBringingForMe(text: string) {
-    if (!me) {
-      await saveAttendee({
-        id,
-        name,
-        rsvp: "",
-        foodPreference: "",
-        drinkPreference: "",
-        notes: "",
-        bringing: text,
-      });
-    } else {
-      await saveAttendee({ ...me, bringing: text });
-    }
+  async function addDirect(attendeeId: string, label: string) {
+    if (!label.trim()) return;
+    await addItem({
+      label,
+      addedBy: id,
+      addedByName: name,
+      assignedTo: attendeeId,
+      origin: "direct",
+    });
+    setDirectDrafts((d) => ({ ...d, [attendeeId]: "" }));
   }
 
   function onPick(itemId: string) {
@@ -75,13 +66,24 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
     setHoverTarget(null);
   }
 
+  async function xAttachedChip(item: Item) {
+    // Pool-origin → return to the pool. Direct → permanently delete.
+    if (item.origin === "direct") {
+      if (!confirm(`Remove "${item.label}"?`)) return;
+      await deleteItem(item.id);
+    } else {
+      await assignItem(item.id, null);
+    }
+  }
+
   return (
     <>
       <div className="card">
         <h2>What everyone's bringing <span className="heb-small">· מה מביאים</span></h2>
         <p className="muted" style={{ marginTop: 0 }}>
           Drag a chip from the <strong>Ideas pool</strong> onto someone's name —
-          or tap a chip then tap a name. You can also type directly next to your own name.
+          or tap a chip then tap a name. You can also type something straight
+          into your own row.
         </p>
       </div>
 
@@ -95,6 +97,7 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
               {attendees.map((a) => {
                 const isMe = a.id === id;
                 const dropping = hoverTarget === a.id;
+                const draft = directDrafts[a.id] ?? "";
                 return (
                   <li
                     key={a.id}
@@ -120,33 +123,53 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
                       </div>
                     </div>
                     <div className="person-chips">
-                      {(byAttendee[a.id] || []).map((it) => (
-                        <Chip
-                          key={it.id}
-                          item={it}
-                          picked={picked === it.id}
-                          onPick={onPick}
-                        />
-                      ))}
+                      {(byAttendee[a.id] || []).map((it) => {
+                        const canX = it.assignedTo === id || it.addedBy === id;
+                        return (
+                          <AttachedChip
+                            key={it.id}
+                            item={it}
+                            picked={picked === it.id}
+                            onPick={onPick}
+                            onX={canX ? () => xAttachedChip(it) : undefined}
+                          />
+                        );
+                      })}
                       {a.bringing?.trim() && (
-                        <span className="chip chip-text">{a.bringing}</span>
+                        <span className="chip chip-text" title="Free-text note">
+                          {a.bringing}
+                        </span>
                       )}
                       {(byAttendee[a.id] || []).length === 0 && !a.bringing?.trim() && (
                         <span className="muted small">drop something here…</span>
                       )}
                     </div>
+
                     {isMe && (
-                      <input
-                        type="text"
-                        className="inline-bring"
-                        placeholder="…or just type what you're bringing"
-                        defaultValue={a.bringing ?? ""}
-                        onBlur={(e) => {
-                          if (e.target.value !== (a.bringing ?? "")) {
-                            quickBringingForMe(e.target.value);
-                          }
+                      <form
+                        className="direct-add"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          addDirect(a.id, draft);
                         }}
-                      />
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <input
+                          type="text"
+                          placeholder="…or type something you'll bring"
+                          value={draft}
+                          onChange={(e) =>
+                            setDirectDrafts((d) => ({ ...d, [a.id]: e.target.value }))
+                          }
+                        />
+                        <button
+                          className="btn btn-add"
+                          type="submit"
+                          disabled={!draft.trim()}
+                        >
+                          Add
+                        </button>
+                      </form>
                     )}
                   </li>
                 );
@@ -175,14 +198,14 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
             Things still up for grabs. Add anything we might want.
           </p>
 
-          <form onSubmit={add} className="pool-add">
+          <form onSubmit={addToPool} className="pool-add" onClick={(e) => e.stopPropagation()}>
             <input
               type="text"
               value={newLabel}
               placeholder="e.g. cheesecake for 8"
               onChange={(e) => setNewLabel(e.target.value)}
             />
-            <button className="btn" type="submit">Add</button>
+            <button className="btn" type="submit" disabled={!newLabel.trim()}>Add</button>
           </form>
 
           <div className="pool-chips">
@@ -190,7 +213,7 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
               <p className="muted small">Nothing in the pool — everything's been claimed!</p>
             ) : (
               pool.map((it) => (
-                <Chip
+                <PoolChip
                   key={it.id}
                   item={it}
                   picked={picked === it.id}
@@ -213,7 +236,51 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
   );
 }
 
-function Chip({
+function AttachedChip({
+  item,
+  picked,
+  onPick,
+  onX,
+}: {
+  item: Item;
+  picked: boolean;
+  onPick: (id: string) => void;
+  onX?: () => void;
+}) {
+  const cls = `chip chip-attached chip-${item.origin}${picked ? " picked" : ""}`;
+  return (
+    <span
+      className={cls}
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData("text/item", item.id);
+        e.dataTransfer.effectAllowed = "move";
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onPick(item.id);
+      }}
+      title={item.origin === "direct" ? `Added by ${item.addedByName}` : `From the pool · added by ${item.addedByName}`}
+    >
+      {item.label}
+      {onX && (
+        <button
+          className="chip-x"
+          onClick={(e) => {
+            e.stopPropagation();
+            onX();
+          }}
+          aria-label={item.origin === "direct" ? "Delete" : "Return to pool"}
+          title={item.origin === "direct" ? "Delete" : "Return to pool"}
+        >
+          ×
+        </button>
+      )}
+    </span>
+  );
+}
+
+function PoolChip({
   item,
   picked,
   onPick,

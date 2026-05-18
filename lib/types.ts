@@ -17,6 +17,7 @@ export type Item = {
   label: string;
   category: string;
   assignedTo: string | null;
+  origin: "pool" | "direct";
   addedBy: string;
   addedByName: string;
   createdAt: number;

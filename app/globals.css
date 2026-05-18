@@ -450,12 +450,24 @@ img.avatar-mini { display: block; }
   min-height: 28px;
   padding: 4px 0;
 }
-.inline-bring {
-  margin-top: 8px;
+.direct-add {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.direct-add input {
+  flex: 1;
   font-size: 0.9rem !important;
   padding: 8px 10px !important;
   box-shadow: 2px 2px 0 var(--accent) !important;
 }
+.btn.btn-add {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  background: #e88128;
+}
+.btn.btn-add:hover:not(:disabled) { background: #c96c1c; }
+.btn.btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Chip */
 .chip {
@@ -490,6 +502,12 @@ img.avatar-mini { display: block; }
   color: var(--muted);
   box-shadow: none;
 }
+/* attached chips: pool-derived stay yellow; direct (typed-in) are orange */
+.chip.chip-direct {
+  background: #ffd8a8;
+  color: #4a2410;
+}
+.chip.chip-direct:hover { background: #ffc880; }
 .chip-x {
   background: none;
   border: none;

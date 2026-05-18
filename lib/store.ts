@@ -64,12 +64,22 @@ export function subscribeAttendees(cb: (attendees: Attendee[]) => void): () => v
 
 /* -------- items -------- */
 
-export async function addItem(input: { label: string; category?: string; addedBy: string; addedByName: string }): Promise<Item> {
+export async function addItem(input: {
+  label: string;
+  category?: string;
+  addedBy: string;
+  addedByName: string;
+  assignedTo?: string | null;
+  origin?: "pool" | "direct";
+}): Promise<Item> {
   const now = Date.now();
+  const assignedTo = input.assignedTo ?? null;
+  const origin = input.origin ?? (assignedTo ? "direct" : "pool");
   const ref = await addDoc(collection(getDb(), ITEMS), {
     label: input.label.trim(),
     category: input.category ?? "",
-    assignedTo: null,
+    assignedTo,
+    origin,
     addedBy: input.addedBy,
     addedByName: input.addedByName,
     createdAt: now,
@@ -80,7 +90,8 @@ export async function addItem(input: { label: string; category?: string; addedBy
     id: ref.id,
     label: input.label.trim(),
     category: input.category ?? "",
-    assignedTo: null,
+    assignedTo,
+    origin,
     addedBy: input.addedBy,
     addedByName: input.addedByName,
     createdAt: now,
