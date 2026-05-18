@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "@/components/AppGate";
+import { ensureAttendee } from "@/lib/ensureAttendee";
 import {
   addItem,
   assignItem,
@@ -24,10 +25,12 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
   const [directDrafts, setDirectDrafts] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    // Make sure my own attendee record exists so my row shows up.
+    ensureAttendee(id, name).catch((e) => console.error("ensureAttendee:", e));
     const ua = subscribeAttendees(setAttendees);
     const ui = subscribeItems(setItems);
     return () => { ua(); ui(); };
-  }, []);
+  }, [id, name]);
 
   const pool = useMemo(() => items.filter((i) => !i.assignedTo), [items]);
   const byAttendee = useMemo(() => {
@@ -35,6 +38,26 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
     for (const i of items) if (i.assignedTo) (map[i.assignedTo] ||= []).push(i);
     return map;
   }, [items]);
+
+  // Always render "me" first. If my attendee record hasn't synced yet,
+  // synthesise a placeholder so the Add form is still visible.
+  const orderedAttendees = useMemo<Attendee[]>(() => {
+    const me = attendees.find((a) => a.id === id);
+    const others = attendees.filter((a) => a.id !== id);
+    if (me) return [me, ...others];
+    const placeholder: Attendee = {
+      id,
+      name,
+      rsvp: "",
+      foodPreference: "",
+      drinkPreference: "",
+      notes: "",
+      bringing: "",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    return [placeholder, ...others];
+  }, [attendees, id, name]);
 
   async function addToPool(e: React.FormEvent) {
     e.preventDefault();
@@ -90,11 +113,11 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
       <div className="potluck">
         <div className="card potluck-people">
           <h3>People <span className="heb-small">· האורחים</span></h3>
-          {attendees.length === 0 ? (
+          {orderedAttendees.length === 0 ? (
             <p className="muted">No one's signed in yet.</p>
           ) : (
             <ul className="people-list">
-              {attendees.map((a) => {
+              {orderedAttendees.map((a) => {
                 const isMe = a.id === id;
                 const dropping = hoverTarget === a.id;
                 const draft = directDrafts[a.id] ?? "";
