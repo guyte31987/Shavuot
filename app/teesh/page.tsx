@@ -78,7 +78,7 @@ export default function TeeshPage() {
         <p>
           Resident kitchen overseer, green-eyed bandit, the muse behind the wheat
           field. Drop your favourite Teesh shots here — from the night, or from
-          any night.
+          any other time.
         </p>
 
         <div className="teesh-upload">
