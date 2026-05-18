@@ -738,6 +738,32 @@ img.avatar { display: block; }
   letter-spacing: 0;
 }
 
+/* ---------- Admin: duplicate badges ---------- */
+
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1.5px solid #1a1a1a;
+  vertical-align: middle;
+}
+.badge-dup {
+  background: #f7c4c4;
+  color: #6b1f1f;
+}
+.badge-keep {
+  background: #cfe8d4;
+  color: #1f5a2e;
+}
+.row-duplicate { background: #fff7f7; }
+.row-duplicate td { opacity: 0.7; }
+.row-duplicate td:last-child { opacity: 1; }
+
 /* ---------- Admin link in footer ---------- */
 
 .foot {

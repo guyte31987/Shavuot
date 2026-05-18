@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { EVENT } from "@/lib/event";
+import { nameToId } from "@/lib/session";
 import { deleteAttendee, subscribeAttendees, subscribeItems } from "@/lib/store";
 import type { Attendee, Item } from "@/lib/types";
 
@@ -53,6 +54,29 @@ export default function AdminPage() {
   }, [items]);
 
   const pool = items.filter((i) => !i.assignedTo);
+
+  // Detect name-slug collisions so we can flag duplicate rows in the table.
+  const dupStatus = useMemo(() => {
+    const groups = new Map<string, Attendee[]>();
+    for (const a of attendees) {
+      const key = nameToId(a.name) || a.id;
+      (groups.get(key) ?? groups.set(key, []).get(key)!).push(a);
+    }
+    const status: Record<string, "canonical" | "duplicate" | "unique"> = {};
+    for (const [slug, group] of groups) {
+      if (group.length === 1) {
+        status[group[0].id] = "unique";
+        continue;
+      }
+      const canonical =
+        group.find((a) => a.id === slug) ??
+        [...group].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
+      for (const a of group) {
+        status[a.id] = a.id === canonical.id ? "canonical" : "duplicate";
+      }
+    }
+    return status;
+  }, [attendees]);
 
   const counts = useMemo(() => {
     const c = { dinner: 0, drinks: 0, both: 0, no: 0, undecided: 0 };
@@ -135,30 +159,45 @@ export default function AdminPage() {
             </tr>
           </thead>
           <tbody>
-            {attendees.map((a) => (
-              <tr key={a.id}>
-                <td><strong>{a.name}</strong></td>
-                <td>{RSVP_LABEL[a.rsvp ?? ""] ?? "—"}</td>
-                <td>{a.foodPreference}</td>
-                <td>{a.drinkPreference}</td>
-                <td>{a.notes}</td>
-                <td>
-                  {(itemsByAttendee[a.id] || []).map((i) => i.label).join(", ")}
-                  {a.bringing?.trim() && (
-                    <>
-                      {(itemsByAttendee[a.id] || []).length > 0 && " · "}
-                      <em>{a.bringing}</em>
-                    </>
-                  )}
-                </td>
-                <td className="muted">
-                  {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "—"}
-                </td>
-                <td>
-                  <button className="btn danger" onClick={() => del(a.id)}>Remove</button>
-                </td>
-              </tr>
-            ))}
+            {attendees.map((a) => {
+              const dup = dupStatus[a.id];
+              return (
+                <tr key={a.id} className={dup === "duplicate" ? "row-duplicate" : ""}>
+                  <td>
+                    <strong>{a.name}</strong>
+                    {dup === "duplicate" && (
+                      <span className="badge badge-dup" title="Older record with the same name — safe to remove">
+                        duplicate
+                      </span>
+                    )}
+                    {dup === "canonical" && (
+                      <span className="badge badge-keep" title="Newest record for this name — keep this one">
+                        keep
+                      </span>
+                    )}
+                  </td>
+                  <td>{RSVP_LABEL[a.rsvp ?? ""] ?? "—"}</td>
+                  <td>{a.foodPreference}</td>
+                  <td>{a.drinkPreference}</td>
+                  <td>{a.notes}</td>
+                  <td>
+                    {(itemsByAttendee[a.id] || []).map((i) => i.label).join(", ")}
+                    {a.bringing?.trim() && (
+                      <>
+                        {(itemsByAttendee[a.id] || []).length > 0 && " · "}
+                        <em>{a.bringing}</em>
+                      </>
+                    )}
+                  </td>
+                  <td className="muted">
+                    {a.updatedAt ? new Date(a.updatedAt).toLocaleString() : "—"}
+                  </td>
+                  <td>
+                    <button className="btn danger" onClick={() => del(a.id)}>Remove</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
