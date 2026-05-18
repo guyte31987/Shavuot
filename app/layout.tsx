@@ -7,6 +7,11 @@ import { AppGate } from "@/components/AppGate";
 export const metadata: Metadata = {
   title: "Shavuot Dinner",
   description: "Celebrating Shavuot together",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
