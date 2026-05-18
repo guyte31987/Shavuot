@@ -13,8 +13,6 @@ const row2 = [
   { href: "/schedule", label: "Schedule" },
 ];
 
-const teesh = { href: "/teesh", label: "Pics of Teesh" };
-
 export function Nav() {
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href;
@@ -33,13 +31,11 @@ export function Nav() {
             {t.label}
           </Link>
         ))}
-      </div>
-      <div className="nav-row nav-row-teesh">
         <Link
-          href={teesh.href}
-          className={`teesh-pill${isActive(teesh.href) ? " active" : ""}`}
+          href="/teesh"
+          className={`teesh-pill${isActive("/teesh") ? " active" : ""}`}
         >
-          🐾 {teesh.label}
+          🐾 Pics of Teesh
         </Link>
       </div>
     </nav>

@@ -175,12 +175,6 @@ html, body {
   gap: 6px;
   justify-content: center;
 }
-.nav-row-teesh {
-  margin-top: 10px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--line);
-  width: 100%;
-}
 .nav a {
   display: inline-block;
   padding: 6px 14px;
@@ -196,20 +190,14 @@ html, body {
   white-space: nowrap;
 }
 
-/* Special Teesh pill */
+/* Special Teesh pill — same dimensions as other pills, golden look */
 .teesh-pill {
   background: linear-gradient(180deg, #ffd76b 0%, #e0a82a 100%) !important;
   color: #4a2f0a !important;
-  font-family: "Frank Ruhl Libre", serif;
-  font-weight: 800 !important;
-  font-size: 0.95rem !important;
-  padding: 8px 18px !important;
-  box-shadow: 3px 3px 0 #1a1a1a !important;
+  font-weight: 700 !important;
 }
 .teesh-pill:hover {
   background: linear-gradient(180deg, #ffe28a 0%, #efba3a 100%) !important;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 #1a1a1a !important;
 }
 .teesh-pill.active {
   background: linear-gradient(180deg, #e88128 0%, #b85d12 100%) !important;
@@ -869,7 +857,6 @@ img.avatar { display: block; }
   .nav { padding: 14px 0 20px; gap: 6px; }
   .nav-row { gap: 5px; }
   .nav a { padding: 5px 11px; font-size: 0.8rem; }
-  .teesh-pill { padding: 7px 14px !important; font-size: 0.88rem !important; }
 }
 
 /* ---------- Teesh gallery ---------- */
