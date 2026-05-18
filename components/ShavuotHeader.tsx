@@ -7,13 +7,6 @@ import { useEffect, useRef } from "react";
  * Usage:
  *   import { ShavuotHeader } from "@/components/ShavuotHeader";
  *   <ShavuotHeader title="Shavuot" strap="22 May · Hackney Wick · E9" />
- *
- * Requires:
- *   - "Cormorant Garamond" + "DM Mono" from Google Fonts (already loaded
- *     by app/layout.tsx in this project — if you move it elsewhere, add
- *     them to your <head>).
- *
- * Mobile-first. Default height 240px. Set `height` to override.
  */
 export function ShavuotHeader({
   title = "Shavuot",
@@ -31,7 +24,7 @@ export function ShavuotHeader({
     const backMid = backMidRef.current;
     const front   = frontRef.current;
     if (!backMid || !front) return;
-    backMid.replaceChildren(); // idempotent (StrictMode re-runs)
+    backMid.replaceChildren();
     front.replaceChildren();
 
     const SVG_NS = "http://www.w3.org/2000/svg";
@@ -108,53 +101,6 @@ export function ShavuotHeader({
             })}
           </g>
 
-          {/* Cat: a small tabby with green eyes, popping up from the wheat. */}
-          <symbol id="sh-cat" viewBox="-50 -90 100 100" overflow="visible">
-            <path d="M-30 -8 Q-32 -22 -22 -30 L22 -30 Q32 -22 30 -8 Z" fill="#9a7340"/>
-            <g className="sh-cat-ear-l">
-              <path d="M-26 -55 L-30 -82 L-12 -62 Z" fill="#8a6332" stroke="#3a2614" strokeWidth="0.8" strokeLinejoin="round"/>
-              <path d="M-23 -60 L-25 -73 L-16 -63 Z" fill="#e8b890"/>
-            </g>
-            <g className="sh-cat-ear-r">
-              <path d="M26 -55 L30 -82 L12 -62 Z" fill="#8a6332" stroke="#3a2614" strokeWidth="0.8" strokeLinejoin="round"/>
-              <path d="M23 -60 L25 -73 L16 -63 Z" fill="#e8b890"/>
-            </g>
-            <ellipse cx="0" cy="-40" rx="30" ry="26" fill="#a87e4a" stroke="#3a2614" strokeWidth="0.9"/>
-            <g stroke="#3a2614" strokeWidth="1.6" fill="none" strokeLinecap="round">
-              <path d="M-10 -60 Q-8 -52 -5 -48"/>
-              <path d="M-2 -60 Q-1 -52 1 -48"/>
-              <path d="M10 -60 Q8 -52 5 -48"/>
-              <path d="M-18 -54 Q-20 -48 -22 -44"/>
-              <path d="M18 -54 Q20 -48 22 -44"/>
-              <path d="M-22 -42 Q-26 -40 -28 -38"/>
-              <path d="M22 -42 Q26 -40 28 -38"/>
-            </g>
-            <ellipse cx="-18" cy="-30" rx="10" ry="7" fill="#b88a52" opacity="0.6"/>
-            <ellipse cx="18"  cy="-30" rx="10" ry="7" fill="#b88a52" opacity="0.6"/>
-            <path d="M-13 -34 Q0 -22 13 -34 Q12 -22 0 -20 Q-12 -22 -13 -34 Z" fill="#f5e6d0"/>
-            <ellipse cx="-12" cy="-44" rx="6.5" ry="7.5" fill="#f4ead0" stroke="#3a2614" strokeWidth="0.9"/>
-            <ellipse cx="12"  cy="-44" rx="6.5" ry="7.5" fill="#f4ead0" stroke="#3a2614" strokeWidth="0.9"/>
-            <ellipse cx="-12" cy="-44" rx="5.2" ry="6.8" fill="#7ac46a"/>
-            <ellipse cx="12"  cy="-44" rx="5.2" ry="6.8" fill="#7ac46a"/>
-            <ellipse cx="-12" cy="-44" rx="3.5" ry="5.6" fill="#3a6a2a"/>
-            <ellipse cx="12"  cy="-44" rx="3.5" ry="5.6" fill="#3a6a2a"/>
-            <ellipse cx="-12" cy="-44" rx="1.1" ry="5.4" fill="#1a1a1a"/>
-            <ellipse cx="12"  cy="-44" rx="1.1" ry="5.4" fill="#1a1a1a"/>
-            <circle cx="-13.5" cy="-46.5" r="1.4" fill="#ffffff"/>
-            <circle cx="10.5"  cy="-46.5" r="1.4" fill="#ffffff"/>
-            <path d="M-3 -30 L3 -30 L0 -26 Z" fill="#d68a8a" stroke="#3a2614" strokeWidth="0.7" strokeLinejoin="round"/>
-            <path d="M0 -26 Q-3 -22 -6 -23" stroke="#3a2614" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
-            <path d="M0 -26 Q3 -22 6 -23"   stroke="#3a2614" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
-            <g stroke="#fbf3df" strokeWidth="0.9" strokeLinecap="round">
-              <line x1="-10" y1="-26" x2="-32" y2="-30"/>
-              <line x1="-10" y1="-24" x2="-32" y2="-22"/>
-              <line x1="10"  y1="-26" x2="32"  y2="-30"/>
-              <line x1="10"  y1="-24" x2="32"  y2="-22"/>
-            </g>
-            <rect className="sh-cat-eyelid" x="-18.5" y="-51.5" width="13" height="15" fill="#a87e4a"/>
-            <rect className="sh-cat-eyelid" x="5.5"   y="-51.5" width="13" height="15" fill="#a87e4a"/>
-          </symbol>
-
           <symbol id="sh-cloud" viewBox="0 0 200 80" overflow="visible">
             <g fill="#ffffff" opacity="0.95">
               <ellipse cx="44" cy="50" rx="28" ry="18"/>
@@ -182,16 +128,16 @@ export function ShavuotHeader({
         {/* Back + mid wheat rows */}
         <g ref={backMidRef as any} />
 
-        {/* Cats peeking up — sandwiched between mid and front wheat so
-            the front stalks hide their bodies. */}
+        {/* Cats peeking up — inlined (not via <use>) so CSS animations on
+            the eyelids/ears reach them. Sit between mid and front wheat. */}
         <g className="sh-cat sh-cat-1" transform="translate(380 332)">
-          <g className="sh-cat-pop"><use href="#sh-cat" width="100" height="100" x="-50" y="-90"/></g>
+          <g className="sh-cat-pop"><Cat/></g>
         </g>
         <g className="sh-cat sh-cat-2" transform="translate(600 336) scale(0.86)">
-          <g className="sh-cat-pop"><use href="#sh-cat" width="100" height="100" x="-50" y="-90"/></g>
+          <g className="sh-cat-pop"><Cat/></g>
         </g>
         <g className="sh-cat sh-cat-3" transform="translate(820 330) scale(1.05)">
-          <g className="sh-cat-pop"><use href="#sh-cat" width="100" height="100" x="-50" y="-90"/></g>
+          <g className="sh-cat-pop"><Cat/></g>
         </g>
 
         {/* Front wheat row — paints over the cats' lower halves */}
@@ -214,6 +160,56 @@ export function ShavuotHeader({
 
       <style>{CSS}</style>
     </header>
+  );
+}
+
+function Cat() {
+  return (
+    <g>
+      <path d="M-30 -8 Q-32 -22 -22 -30 L22 -30 Q32 -22 30 -8 Z" fill="#9a7340"/>
+      <g className="sh-cat-ear-l">
+        <path d="M-26 -55 L-30 -82 L-12 -62 Z" fill="#8a6332" stroke="#3a2614" strokeWidth="0.8" strokeLinejoin="round"/>
+        <path d="M-23 -60 L-25 -73 L-16 -63 Z" fill="#e8b890"/>
+      </g>
+      <g className="sh-cat-ear-r">
+        <path d="M26 -55 L30 -82 L12 -62 Z" fill="#8a6332" stroke="#3a2614" strokeWidth="0.8" strokeLinejoin="round"/>
+        <path d="M23 -60 L25 -73 L16 -63 Z" fill="#e8b890"/>
+      </g>
+      <ellipse cx="0" cy="-40" rx="30" ry="26" fill="#a87e4a" stroke="#3a2614" strokeWidth="0.9"/>
+      <g stroke="#3a2614" strokeWidth="1.6" fill="none" strokeLinecap="round">
+        <path d="M-10 -60 Q-8 -52 -5 -48"/>
+        <path d="M-2 -60 Q-1 -52 1 -48"/>
+        <path d="M10 -60 Q8 -52 5 -48"/>
+        <path d="M-18 -54 Q-20 -48 -22 -44"/>
+        <path d="M18 -54 Q20 -48 22 -44"/>
+        <path d="M-22 -42 Q-26 -40 -28 -38"/>
+        <path d="M22 -42 Q26 -40 28 -38"/>
+      </g>
+      <ellipse cx="-18" cy="-30" rx="10" ry="7" fill="#b88a52" opacity="0.6"/>
+      <ellipse cx="18"  cy="-30" rx="10" ry="7" fill="#b88a52" opacity="0.6"/>
+      <path d="M-13 -34 Q0 -22 13 -34 Q12 -22 0 -20 Q-12 -22 -13 -34 Z" fill="#f5e6d0"/>
+      <ellipse cx="-12" cy="-44" rx="6.5" ry="7.5" fill="#f4ead0" stroke="#3a2614" strokeWidth="0.9"/>
+      <ellipse cx="12"  cy="-44" rx="6.5" ry="7.5" fill="#f4ead0" stroke="#3a2614" strokeWidth="0.9"/>
+      <ellipse cx="-12" cy="-44" rx="5.2" ry="6.8" fill="#7ac46a"/>
+      <ellipse cx="12"  cy="-44" rx="5.2" ry="6.8" fill="#7ac46a"/>
+      <ellipse cx="-12" cy="-44" rx="3.5" ry="5.6" fill="#3a6a2a"/>
+      <ellipse cx="12"  cy="-44" rx="3.5" ry="5.6" fill="#3a6a2a"/>
+      <ellipse cx="-12" cy="-44" rx="1.1" ry="5.4" fill="#1a1a1a"/>
+      <ellipse cx="12"  cy="-44" rx="1.1" ry="5.4" fill="#1a1a1a"/>
+      <circle cx="-13.5" cy="-46.5" r="1.4" fill="#ffffff"/>
+      <circle cx="10.5"  cy="-46.5" r="1.4" fill="#ffffff"/>
+      <path d="M-3 -30 L3 -30 L0 -26 Z" fill="#d68a8a" stroke="#3a2614" strokeWidth="0.7" strokeLinejoin="round"/>
+      <path d="M0 -26 Q-3 -22 -6 -23" stroke="#3a2614" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+      <path d="M0 -26 Q3 -22 6 -23"   stroke="#3a2614" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+      <g stroke="#fbf3df" strokeWidth="0.9" strokeLinecap="round">
+        <line x1="-10" y1="-26" x2="-32" y2="-30"/>
+        <line x1="-10" y1="-24" x2="-32" y2="-22"/>
+        <line x1="10"  y1="-26" x2="32"  y2="-30"/>
+        <line x1="10"  y1="-24" x2="32"  y2="-22"/>
+      </g>
+      <rect className="sh-cat-eyelid" x="-18.5" y="-51.5" width="13" height="15" fill="#a87e4a"/>
+      <rect className="sh-cat-eyelid" x="5.5"   y="-51.5" width="13" height="15" fill="#a87e4a"/>
+    </g>
   );
 }
 
