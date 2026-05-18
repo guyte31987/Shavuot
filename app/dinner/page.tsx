@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "@/components/AppGate";
 import { ensureAttendee } from "@/lib/ensureAttendee";
+import { nameToId } from "@/lib/session";
 import {
   addItem,
   assignItem,
@@ -10,6 +11,29 @@ import {
   subscribeItems,
 } from "@/lib/store";
 import type { Attendee, Item } from "@/lib/types";
+
+/** Collapse old-id duplicates: any records that share a name-slug get
+ *  merged into one row. Prefer the record whose id already matches the
+ *  slug (the new schema); fall back to the most recently updated. */
+function dedupeAttendees(list: Attendee[]): Attendee[] {
+  const groups = new Map<string, Attendee[]>();
+  for (const a of list) {
+    const key = nameToId(a.name) || a.id;
+    (groups.get(key) ?? groups.set(key, []).get(key)!).push(a);
+  }
+  const out: Attendee[] = [];
+  for (const [slug, group] of groups) {
+    if (group.length === 1) {
+      out.push(group[0]);
+      continue;
+    }
+    const canonical =
+      group.find((a) => a.id === slug) ??
+      [...group].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
+    out.push(canonical);
+  }
+  return out.sort((a, b) => (a.createdAt ?? 0) - (b.createdAt ?? 0));
+}
 
 export default function DinnerPage() {
   const { id, name } = useSession();
@@ -32,18 +56,43 @@ function DinnerBoard({ id, name }: { id: string; name: string }) {
     return () => { ua(); ui(); };
   }, [id, name]);
 
+  // Map orphan attendee ids to the canonical id for the same name-slug,
+  // so items assigned to the old id still group under the new row.
+  const canonicalIdMap = useMemo(() => {
+    const groups = new Map<string, Attendee[]>();
+    for (const a of attendees) {
+      const key = nameToId(a.name) || a.id;
+      (groups.get(key) ?? groups.set(key, []).get(key)!).push(a);
+    }
+    const map = new Map<string, string>();
+    for (const [slug, group] of groups) {
+      const canonical =
+        group.find((a) => a.id === slug)?.id ??
+        [...group].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0].id;
+      for (const a of group) map.set(a.id, canonical);
+    }
+    return map;
+  }, [attendees]);
+
   const pool = useMemo(() => items.filter((i) => !i.assignedTo), [items]);
   const byAttendee = useMemo(() => {
     const map: Record<string, Item[]> = {};
-    for (const i of items) if (i.assignedTo) (map[i.assignedTo] ||= []).push(i);
+    for (const i of items) {
+      if (!i.assignedTo) continue;
+      const canonical = canonicalIdMap.get(i.assignedTo) ?? i.assignedTo;
+      (map[canonical] ||= []).push(i);
+    }
     return map;
-  }, [items]);
+  }, [items, canonicalIdMap]);
 
   // Always render "me" first. If my attendee record hasn't synced yet,
-  // synthesise a placeholder so the Add form is still visible.
+  // synthesise a placeholder so the Add form is still visible. Also
+  // collapse any orphan records (different ids, same name) into one row.
   const orderedAttendees = useMemo<Attendee[]>(() => {
-    const me = attendees.find((a) => a.id === id);
-    const others = attendees.filter((a) => a.id !== id);
+    const deduped = dedupeAttendees(attendees);
+    const meSlug = nameToId(name) || id;
+    const me = deduped.find((a) => a.id === id || a.id === meSlug);
+    const others = deduped.filter((a) => a !== me);
     if (me) return [me, ...others];
     const placeholder: Attendee = {
       id,
