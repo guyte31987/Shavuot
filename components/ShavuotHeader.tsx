@@ -24,18 +24,21 @@ export function ShavuotHeader({
   strap?: string;
   height?: number;
 }) {
-  const fieldRef = useRef<SVGGElement | null>(null);
+  const backMidRef = useRef<SVGGElement | null>(null);
+  const frontRef   = useRef<SVGGElement | null>(null);
 
   useEffect(() => {
-    const field = fieldRef.current;
-    if (!field) return;
-    field.replaceChildren(); // idempotent (StrictMode re-runs)
+    const backMid = backMidRef.current;
+    const front   = frontRef.current;
+    if (!backMid || !front) return;
+    backMid.replaceChildren(); // idempotent (StrictMode re-runs)
+    front.replaceChildren();
 
     const SVG_NS = "http://www.w3.org/2000/svg";
     const ROWS = [
-      { count: 28, yJitter: [262, 282], scale: [0.5, 0.65], opacity: 0.6,  duration: 5.2, cls: "r-back" },
-      { count: 22, yJitter: [296, 314], scale: [0.75, 0.95], opacity: 0.92, duration: 5.6, cls: "r-mid"  },
-      { count: 18, yJitter: [328, 344], scale: [1.0, 1.25], opacity: 1.0,  duration: 6.0, cls: "r-front"},
+      { count: 28, yJitter: [262, 282], scale: [0.5, 0.65], opacity: 0.6,  duration: 5.2, cls: "r-back",  target: backMid },
+      { count: 22, yJitter: [296, 314], scale: [0.75, 0.95], opacity: 0.92, duration: 5.6, cls: "r-mid",   target: backMid },
+      { count: 18, yJitter: [328, 344], scale: [1.0, 1.25], opacity: 1.0,  duration: 6.0, cls: "r-front", target: front   },
     ];
     const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
@@ -67,7 +70,7 @@ export function ShavuotHeader({
         outer.appendChild(inner);
         rowG.appendChild(outer);
       }
-      field.appendChild(rowG);
+      row.target.appendChild(rowG);
     });
   }, []);
 
@@ -105,6 +108,53 @@ export function ShavuotHeader({
             })}
           </g>
 
+          {/* Cat: a small tabby with green eyes, popping up from the wheat. */}
+          <symbol id="sh-cat" viewBox="-50 -90 100 100" overflow="visible">
+            <path d="M-30 -8 Q-32 -22 -22 -30 L22 -30 Q32 -22 30 -8 Z" fill="#9a7340"/>
+            <g className="sh-cat-ear-l">
+              <path d="M-26 -55 L-30 -82 L-12 -62 Z" fill="#8a6332" stroke="#3a2614" strokeWidth="0.8" strokeLinejoin="round"/>
+              <path d="M-23 -60 L-25 -73 L-16 -63 Z" fill="#e8b890"/>
+            </g>
+            <g className="sh-cat-ear-r">
+              <path d="M26 -55 L30 -82 L12 -62 Z" fill="#8a6332" stroke="#3a2614" strokeWidth="0.8" strokeLinejoin="round"/>
+              <path d="M23 -60 L25 -73 L16 -63 Z" fill="#e8b890"/>
+            </g>
+            <ellipse cx="0" cy="-40" rx="30" ry="26" fill="#a87e4a" stroke="#3a2614" strokeWidth="0.9"/>
+            <g stroke="#3a2614" strokeWidth="1.6" fill="none" strokeLinecap="round">
+              <path d="M-10 -60 Q-8 -52 -5 -48"/>
+              <path d="M-2 -60 Q-1 -52 1 -48"/>
+              <path d="M10 -60 Q8 -52 5 -48"/>
+              <path d="M-18 -54 Q-20 -48 -22 -44"/>
+              <path d="M18 -54 Q20 -48 22 -44"/>
+              <path d="M-22 -42 Q-26 -40 -28 -38"/>
+              <path d="M22 -42 Q26 -40 28 -38"/>
+            </g>
+            <ellipse cx="-18" cy="-30" rx="10" ry="7" fill="#b88a52" opacity="0.6"/>
+            <ellipse cx="18"  cy="-30" rx="10" ry="7" fill="#b88a52" opacity="0.6"/>
+            <path d="M-13 -34 Q0 -22 13 -34 Q12 -22 0 -20 Q-12 -22 -13 -34 Z" fill="#f5e6d0"/>
+            <ellipse cx="-12" cy="-44" rx="6.5" ry="7.5" fill="#f4ead0" stroke="#3a2614" strokeWidth="0.9"/>
+            <ellipse cx="12"  cy="-44" rx="6.5" ry="7.5" fill="#f4ead0" stroke="#3a2614" strokeWidth="0.9"/>
+            <ellipse cx="-12" cy="-44" rx="5.2" ry="6.8" fill="#7ac46a"/>
+            <ellipse cx="12"  cy="-44" rx="5.2" ry="6.8" fill="#7ac46a"/>
+            <ellipse cx="-12" cy="-44" rx="3.5" ry="5.6" fill="#3a6a2a"/>
+            <ellipse cx="12"  cy="-44" rx="3.5" ry="5.6" fill="#3a6a2a"/>
+            <ellipse cx="-12" cy="-44" rx="1.1" ry="5.4" fill="#1a1a1a"/>
+            <ellipse cx="12"  cy="-44" rx="1.1" ry="5.4" fill="#1a1a1a"/>
+            <circle cx="-13.5" cy="-46.5" r="1.4" fill="#ffffff"/>
+            <circle cx="10.5"  cy="-46.5" r="1.4" fill="#ffffff"/>
+            <path d="M-3 -30 L3 -30 L0 -26 Z" fill="#d68a8a" stroke="#3a2614" strokeWidth="0.7" strokeLinejoin="round"/>
+            <path d="M0 -26 Q-3 -22 -6 -23" stroke="#3a2614" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+            <path d="M0 -26 Q3 -22 6 -23"   stroke="#3a2614" strokeWidth="0.9" fill="none" strokeLinecap="round"/>
+            <g stroke="#fbf3df" strokeWidth="0.9" strokeLinecap="round">
+              <line x1="-10" y1="-26" x2="-32" y2="-30"/>
+              <line x1="-10" y1="-24" x2="-32" y2="-22"/>
+              <line x1="10"  y1="-26" x2="32"  y2="-30"/>
+              <line x1="10"  y1="-24" x2="32"  y2="-22"/>
+            </g>
+            <rect className="sh-cat-eyelid" x="-18.5" y="-51.5" width="13" height="15" fill="#a87e4a"/>
+            <rect className="sh-cat-eyelid" x="5.5"   y="-51.5" width="13" height="15" fill="#a87e4a"/>
+          </symbol>
+
           <symbol id="sh-cloud" viewBox="0 0 200 80" overflow="visible">
             <g fill="#ffffff" opacity="0.95">
               <ellipse cx="44" cy="50" rx="28" ry="18"/>
@@ -128,7 +178,25 @@ export function ShavuotHeader({
         </g>
 
         <rect x="0" y="282" width="1200" height="80" fill="#dec488" opacity="0.55"/>
-        <g ref={fieldRef as any} />
+
+        {/* Back + mid wheat rows */}
+        <g ref={backMidRef as any} />
+
+        {/* Cats peeking up — sandwiched between mid and front wheat so
+            the front stalks hide their bodies. */}
+        <g className="sh-cat sh-cat-1" transform="translate(380 332)">
+          <g className="sh-cat-pop"><use href="#sh-cat" width="100" height="100" x="-50" y="-90"/></g>
+        </g>
+        <g className="sh-cat sh-cat-2" transform="translate(600 336) scale(0.86)">
+          <g className="sh-cat-pop"><use href="#sh-cat" width="100" height="100" x="-50" y="-90"/></g>
+        </g>
+        <g className="sh-cat sh-cat-3" transform="translate(820 330) scale(1.05)">
+          <g className="sh-cat-pop"><use href="#sh-cat" width="100" height="100" x="-50" y="-90"/></g>
+        </g>
+
+        {/* Front wheat row — paints over the cats' lower halves */}
+        <g ref={frontRef as any} />
+
         <rect x="0" y="344" width="1200" height="16" fill="#a8731a" opacity="0.22"/>
       </svg>
 
@@ -255,4 +323,47 @@ const CSS = `
   @keyframes sh-flit-3 { 0%{transform:translate(0,0) rotate(2deg)} 50%{transform:translate(80px,-50px) rotate(-5deg)} 100%{transform:translate(0,0) rotate(2deg)} }
   @keyframes sh-flit-4 { 0%{transform:translate(0,0) rotate(-2deg)} 50%{transform:translate(-70px,30px) rotate(4deg)} 100%{transform:translate(0,0) rotate(-2deg)} }
   @keyframes sh-flit-5 { 0%{transform:translate(0,0) rotate(4deg)} 50%{transform:translate(60px,40px) rotate(-4deg)} 100%{transform:translate(0,0) rotate(4deg)} }
+
+  /* Cats peeking up from the wheat */
+  .shavuot-header .sh-cat-pop {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: sh-cat-pop 13s cubic-bezier(.6,.05,.2,1) infinite;
+    will-change: transform;
+  }
+  .shavuot-header .sh-cat-1 .sh-cat-pop { animation-delay: -0.5s; }
+  .shavuot-header .sh-cat-2 .sh-cat-pop { animation-delay: -5.4s;  animation-duration: 15s; }
+  .shavuot-header .sh-cat-3 .sh-cat-pop { animation-delay: -10.2s; animation-duration: 12s; }
+  @keyframes sh-cat-pop {
+    0%   { transform: translateY(82px) rotate(0deg); }
+    4%   { transform: translateY(82px) rotate(0deg); }
+    9%   { transform: translateY(-6px) rotate(-2deg); }
+    12%  { transform: translateY(0)    rotate(0deg); }
+    16%  { transform: translateY(0)    rotate(-7deg); }
+    20%  { transform: translateY(0)    rotate(6deg); }
+    24%  { transform: translateY(0)    rotate(-3deg); }
+    26%  { transform: translateY(2px)  rotate(0deg); }
+    32%  { transform: translateY(82px) rotate(0deg); }
+    100% { transform: translateY(82px) rotate(0deg); }
+  }
+  .shavuot-header .sh-cat-ear-r { transform-box: fill-box; transform-origin: 50% 100%; animation: sh-cat-ear 4.7s ease-in-out infinite; }
+  .shavuot-header .sh-cat-ear-l { transform-box: fill-box; transform-origin: 50% 100%; animation: sh-cat-ear 5.9s ease-in-out infinite -1.2s; }
+  @keyframes sh-cat-ear {
+    0%, 88%, 100% { transform: rotate(0); }
+    91%           { transform: rotate(-14deg); }
+    94%           { transform: rotate(0); }
+  }
+  .shavuot-header .sh-cat-eyelid {
+    transform-box: fill-box;
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+    animation: sh-cat-blink 6.3s ease-in-out infinite;
+  }
+  .shavuot-header .sh-cat-2 .sh-cat-eyelid { animation-duration: 7.7s; animation-delay: -2.5s; }
+  .shavuot-header .sh-cat-3 .sh-cat-eyelid { animation-duration: 5.4s; animation-delay: -4s; }
+  @keyframes sh-cat-blink {
+    0%, 92%, 100% { transform: scaleY(0); }
+    95%           { transform: scaleY(1); }
+    98%           { transform: scaleY(0); }
+  }
 `;
