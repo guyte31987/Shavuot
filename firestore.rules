@@ -24,5 +24,16 @@ service cloud.firestore {
         && request.resource.data.label.size() < 200;
       allow update, delete: if true;
     }
+
+    // Teesh gallery. Photos are inlined as base64 data URLs, resized
+    // client-side to stay well under the 1 MB per-doc limit.
+    match /pics/{id} {
+      allow read: if true;
+      allow create: if
+        request.resource.data.dataUrl is string
+        && request.resource.data.dataUrl.size() < 1000000
+        && request.resource.data.uploadedByName is string;
+      allow update, delete: if true;
+    }
   }
 }

@@ -13,10 +13,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getDb } from "./firebase";
-import type { Attendee, Item } from "./types";
+import type { Attendee, Item, Pic } from "./types";
 
 const ATTENDEES = "attendees";
 const ITEMS = "items";
+const PICS = "pics";
 
 export function attendeeDoc(id: string) {
   return doc(getDb(), ATTENDEES, id);
@@ -117,6 +118,49 @@ export function subscribeItems(cb: (items: Item[]) => void): () => void {
       snap.docs.map((d) => {
         const data = d.data();
         return { ...(data as Item), id: d.id };
+      }),
+    );
+  });
+}
+
+/* -------- pics (Teesh gallery) -------- */
+
+export async function addPic(input: {
+  dataUrl: string;
+  caption: string;
+  uploadedBy: string;
+  uploadedByName: string;
+}): Promise<Pic> {
+  const now = Date.now();
+  const ref = await addDoc(collection(getDb(), PICS), {
+    dataUrl: input.dataUrl,
+    caption: input.caption,
+    uploadedBy: input.uploadedBy,
+    uploadedByName: input.uploadedByName,
+    createdAt: now,
+  });
+  await updateDoc(ref, { id: ref.id });
+  return {
+    id: ref.id,
+    dataUrl: input.dataUrl,
+    caption: input.caption,
+    uploadedBy: input.uploadedBy,
+    uploadedByName: input.uploadedByName,
+    createdAt: now,
+  };
+}
+
+export async function deletePic(id: string): Promise<void> {
+  await deleteDoc(doc(getDb(), PICS, id));
+}
+
+export function subscribePics(cb: (pics: Pic[]) => void): () => void {
+  const q = query(collection(getDb(), PICS), orderBy("createdAt", "desc"));
+  return onSnapshot(q, (snap) => {
+    cb(
+      snap.docs.map((d) => {
+        const data = d.data();
+        return { ...(data as Pic), id: d.id };
       }),
     );
   });

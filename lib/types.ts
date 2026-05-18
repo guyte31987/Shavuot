@@ -24,7 +24,17 @@ export type Item = {
   updatedAt: number;
 };
 
+export type Pic = {
+  id: string;
+  dataUrl: string;
+  caption: string;
+  uploadedBy: string;
+  uploadedByName: string;
+  createdAt: number;
+};
+
 export type Database = {
   attendees: Attendee[];
   items: Item[];
+  pics: Pic[];
 };

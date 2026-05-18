@@ -162,31 +162,58 @@ html, body {
 
 .nav {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 4px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   padding: 18px 0 24px;
   border-bottom: 1px dashed var(--line);
   margin-bottom: 32px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
 }
-.nav::-webkit-scrollbar { display: none; }
+.nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.nav-row-teesh {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  width: 100%;
+}
 .nav a {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border: 1.5px solid #1a1a1a;
   background: #fff;
   border-radius: 999px;
   text-decoration: none;
   color: #1a1a1a;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   box-shadow: 2px 2px 0 #1a1a1a;
   transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s;
   white-space: nowrap;
-  flex-shrink: 0;
+}
+
+/* Special Teesh pill */
+.teesh-pill {
+  background: linear-gradient(180deg, #ffd76b 0%, #e0a82a 100%) !important;
+  color: #4a2f0a !important;
+  font-family: "Frank Ruhl Libre", serif;
+  font-weight: 800 !important;
+  font-size: 0.95rem !important;
+  padding: 8px 18px !important;
+  box-shadow: 3px 3px 0 #1a1a1a !important;
+}
+.teesh-pill:hover {
+  background: linear-gradient(180deg, #ffe28a 0%, #efba3a 100%) !important;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1a1a1a !important;
+}
+.teesh-pill.active {
+  background: linear-gradient(180deg, #e88128 0%, #b85d12 100%) !important;
+  color: #fff !important;
 }
 .nav a:hover {
   background: #fffbe5;
@@ -839,6 +866,105 @@ img.avatar { display: block; }
   .hero { padding: 36px 0 18px; }
   .hero-hebrew { font-size: 3.6rem; }
   .card { padding: 20px; box-shadow: 4px 4px 0 #1a1a1a; }
-  .nav { gap: 3px; padding: 14px 0 20px; }
-  .nav a { padding: 5px 10px; font-size: 0.78rem; }
+  .nav { padding: 14px 0 20px; gap: 6px; }
+  .nav-row { gap: 5px; }
+  .nav a { padding: 5px 11px; font-size: 0.8rem; }
+  .teesh-pill { padding: 7px 14px !important; font-size: 0.88rem !important; }
+}
+
+/* ---------- Teesh gallery ---------- */
+
+.teesh-upload {
+  margin-top: 10px;
+}
+.teesh-upload .btn {
+  cursor: pointer;
+}
+.teesh-preview {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 8px;
+  padding: 12px;
+  border: 2px dashed var(--accent-2);
+  border-radius: 12px;
+  background: #fffbe5;
+}
+.teesh-preview img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #1a1a1a;
+}
+.teesh-preview-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.teesh-preview-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.teesh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.teesh-card {
+  margin: 0;
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #1a1a1a;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.teesh-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: #f6f6f6;
+}
+.teesh-card figcaption {
+  padding: 8px 10px;
+}
+.teesh-caption {
+  font-family: "Frank Ruhl Libre", serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+.teesh-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.teesh-x {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 2px 2px 0 #1a1a1a;
+  padding: 0;
+}
+.teesh-x:hover { background: var(--danger); color: #fff; }
+@media (max-width: 540px) {
+  .teesh-preview { flex-direction: column; }
+  .teesh-preview img { width: 100%; height: 200px; }
 }
