@@ -1,27 +1,17 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ShavuotHeader } from "@/components/ShavuotHeader";
 
 type BodyItem = string | { quote: string[]; citation: string };
 
 type Section = {
-  num: string | null;
+  num: string;
   title: string;
   body: BodyItem[];
   image: string | null;
   footer?: string;
 };
 
-// Cover is index 0 (num: null, no image — rendered as animated header).
-// Each numbered section's image is the one from the docx that accompanied it:
-// rId7→cover.jpg belongs to section I, rId8→01.jpg to section II, etc.
 const SECTIONS: Section[] = [
-  {
-    num: null,
-    title: "",
-    body: [],
-    image: null,
-  },
   {
     num: "I",
     title: "The Smallest Book",
@@ -176,7 +166,6 @@ export default function TikkunPage() {
   const prev = useCallback(() => setIdx((i) => Math.max(0, i - 1)), []);
   const next = useCallback(() => setIdx((i) => Math.min(total - 1, i + 1)), [total]);
 
-  // Keyboard navigation
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
@@ -186,13 +175,11 @@ export default function TikkunPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [prev, next]);
 
-  // Scroll to top of reader (not page top) on section change
   useEffect(() => {
     readerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [idx]);
 
   const s = SECTIONS[idx];
-  const isCover = s.num === null;
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -225,46 +212,47 @@ export default function TikkunPage() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          {isCover ? (
-            <ShavuotHeader
-              lines={["Tikkun Shavuot", "Hackney Wick Edition", "2026 / 5786"]}
-              height={300}
-            />
-          ) : (
-            <>
-              <div className="tikkun-card-body">
-                <div className="tikkun-num">{s.num}</div>
-                <h2 className="tikkun-title">{s.title}</h2>
-                <div className="tikkun-body">
-                  {s.body.map((item, i) =>
-                    typeof item === "string" ? (
-                      <p key={i}>{item}</p>
-                    ) : (
-                      <blockquote key={i} className="tikkun-quote">
-                        {item.quote.map((line, j) => (
-                          <p key={j}>{line}</p>
-                        ))}
-                        <p className="tikkun-citation">{item.citation}</p>
-                      </blockquote>
-                    )
-                  )}
-                </div>
-                {s.footer && <p className="tikkun-footer">{s.footer}</p>}
-              </div>
-              {s.image && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={`/tikkun/${s.image}`} alt="" className="tikkun-img" />
+          <div className="tikkun-card-body">
+            <div className="tikkun-num">{s.num}</div>
+            <h2 className="tikkun-title">{s.title}</h2>
+            <div className="tikkun-body">
+              {s.body.map((item, i) =>
+                typeof item === "string" ? (
+                  <p key={i}>{item}</p>
+                ) : (
+                  <blockquote key={i} className="tikkun-quote">
+                    {item.quote.map((line, j) => (
+                      <p key={j}>{line}</p>
+                    ))}
+                    <p className="tikkun-citation">{item.citation}</p>
+                  </blockquote>
+                )
               )}
-            </>
+            </div>
+            {s.footer && <p className="tikkun-footer">{s.footer}</p>}
+          </div>
+          {s.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={`/tikkun/${s.image}`} alt="" className="tikkun-img" />
           )}
         </div>
 
-        <div className="tikkun-progress">
-          {idx + 1}&thinsp;/&thinsp;{total}
+        {/* Scrubber */}
+        <div className="tikkun-scrubber">
+          <input
+            type="range"
+            min={0}
+            max={total - 1}
+            value={idx}
+            onChange={(e) => setIdx(Number(e.target.value))}
+            aria-label="Section"
+          />
+          <div className="tikkun-progress">
+            {idx + 1}&thinsp;/&thinsp;{total}
+          </div>
         </div>
 
         <div className="tikkun-mobile-nav">
-          <div className="tikkun-swipe-hint">← swipe →</div>
           <div className="tikkun-mobile-btns">
             <button
               className="tikkun-arrow"

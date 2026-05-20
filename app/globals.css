@@ -1154,21 +1154,25 @@ img.avatar { display: block; }
   letter-spacing: 0.08em;
 }
 
-.tikkun-swipe-hint {
-  display: none;
-  text-align: center;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  margin-bottom: 10px;
+.tikkun-scrubber {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+.tikkun-scrubber input[type="range"] {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 
 .tikkun-mobile-nav {
   display: none;
   flex-direction: column;
   align-items: center;
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .tikkun-mobile-btns {
@@ -1180,7 +1184,6 @@ img.avatar { display: block; }
 @media (max-width: 580px) {
   .tikkun-arrow-side { display: none; }
   .tikkun-mobile-nav { display: flex; }
-  .tikkun-swipe-hint { display: block; }
   .tikkun-mobile-btns .tikkun-arrow {
     width: 68px;
     height: 68px;
