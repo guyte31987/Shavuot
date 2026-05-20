@@ -125,7 +125,7 @@ const SECTIONS: Section[] = [
     num: "XIII",
     title: "The Threshing Floor",
     body: [
-      "Naomi then instructs Ruth in an audacious move: go to the threshing floor at night, uncover his feet, lie down, wait. When he wakes, ask him to spread his cloak over you — you are kin. It is, in the language of the time, a proposal. There is much that is transgressive here — an erotically charged encounter at midnight, in which Ruth takes the initiative and names what she needs.",
+      "Naomi then instructs Ruth in an audacious move: go to the threshing floor at night, uncover his feet, lie down, wait. When he wakes, ask him to spread his cloak over you — you are kin. It is, in the language of the time, a proposal. In some readings, this is a transgressive, erotically and politically charged encounter at midnight, in which Ruth takes the initiative to fulfil her own needs and those of her chosen family.",
     ],
     image: "12.jpg",
   },
@@ -133,7 +133,7 @@ const SECTIONS: Section[] = [
     num: "XIV",
     title: "An Unruly Figure",
     body: [
-      "She is, as Pardes puts it, “culturally an unruly figure” — ever in flux, down the centuries shaped and reshaped by rabbis and artists who sometimes tried to make her more manageable, and sometimes embraced her otherness entirely.",
+      “She is, as Pardes puts it, “culturally an unruly figure” — ever in flux, down the centuries shaped and reshaped by rabbis and scholars who sometimes tried to make her more manageable and subjugated to religion and men, while others have wholly embraced her otherness — left intact, uncompromised by her devotion and actions.”,
     ],
     image: "13.jpg",
   },
