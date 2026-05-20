@@ -183,6 +183,17 @@ export default function TikkunPage() {
     }
   }, [idx]);
 
+  // Preload neighbours so navigation feels instant
+  useEffect(() => {
+    [-1, 1].forEach((offset) => {
+      const neighbour = SECTIONS[idx + offset];
+      if (neighbour?.image) {
+        const img = new window.Image();
+        img.src = `/tikkun/${neighbour.image}`;
+      }
+    });
+  }, [idx]);
+
   const s = SECTIONS[idx];
 
   const onTouchStart = (e: React.TouchEvent) => {
