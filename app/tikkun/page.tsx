@@ -156,6 +156,16 @@ const SECTIONS: Section[] = [
   },
 ];
 
+function withHesed(text: string) {
+  const parts = text.split(/\bhesed\b/gi);
+  if (parts.length === 1) return text;
+  return parts.flatMap((part, i) =>
+    i < parts.length - 1
+      ? [part, <span key={i} className="hesed-word">Hesed (חֶסֶד)</span>]
+      : [part]
+  );
+}
+
 export default function TikkunPage() {
   const [idx, setIdx] = useState(0);
   const total = SECTIONS.length;
@@ -229,11 +239,11 @@ export default function TikkunPage() {
         >
           <div className="tikkun-card-body">
             <div className="tikkun-num">{s.num}</div>
-            <h2 className="tikkun-title">{s.title}</h2>
+            <h2 className="tikkun-title">{withHesed(s.title)}</h2>
             <div className="tikkun-body">
               {s.body.map((item, i) =>
                 typeof item === "string" ? (
-                  <p key={i}>{item}</p>
+                  <p key={i}>{withHesed(item)}</p>
                 ) : (
                   <blockquote key={i} className="tikkun-quote">
                     {item.quote.map((line, j) => (

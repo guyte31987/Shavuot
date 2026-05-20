@@ -1154,6 +1154,25 @@ img.avatar { display: block; }
   letter-spacing: 0.08em;
 }
 
+/* Hesed (חֶסֶד) — breathing gold glow */
+.hesed-word {
+  font-weight: 600;
+  animation: hesed-pulse 3s ease-in-out infinite;
+}
+@keyframes hesed-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 6px rgba(201, 162, 58, 0.55),
+      0 0 14px rgba(201, 162, 58, 0.25);
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(201, 162, 58, 1),
+      0 0 22px rgba(201, 162, 58, 0.55),
+      0 0 40px rgba(201, 162, 58, 0.25);
+  }
+}
+
 .tikkun-scrubber {
   margin-top: 14px;
   display: flex;
