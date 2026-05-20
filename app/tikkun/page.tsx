@@ -133,7 +133,7 @@ const SECTIONS: Section[] = [
     num: "XIV",
     title: "An Unruly Figure",
     body: [
-      “She is, as Pardes puts it, “culturally an unruly figure” — ever in flux, down the centuries shaped and reshaped by rabbis and scholars who sometimes tried to make her more manageable and subjugated to religion and men, while others have wholly embraced her otherness — left intact, uncompromised by her devotion and actions.”,
+      'She is, as Pardes puts it, “culturally an unruly figure” — ever in flux, down the centuries shaped and reshaped by rabbis and scholars who sometimes tried to make her more manageable and subjugated to religion and men, while others have wholly embraced her otherness — left intact, uncompromised by her devotion and actions.',
     ],
     image: "13.jpg",
   },
