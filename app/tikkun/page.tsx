@@ -237,7 +237,7 @@ export default function TikkunPage() {
           </div>
           {s.image && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={`/tikkun/${s.image}`} alt="" className="tikkun-img" />
+            <img key={idx} src={`/tikkun/${s.image}`} alt="" className="tikkun-img" />
           )}
         </div>
 
