@@ -6,6 +6,7 @@ const row1 = [
   { href: "/", label: "Details" },
   { href: "/about", label: "About Shavuot" },
   { href: "/dinner", label: "Dinner" },
+  { href: "/tikkun", label: "Tikkun" },
 ];
 
 const row2 = [

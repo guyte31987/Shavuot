@@ -1011,3 +1011,164 @@ img.avatar { display: block; }
   .teesh-preview { flex-direction: column; }
   .teesh-preview img { width: 100%; height: 200px; }
 }
+
+/* ---------- Tikkun reader ---------- */
+
+.tikkun-reader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.tikkun-arrow {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border: 2px solid #1a1a1a;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 3px 3px 0 #1a1a1a;
+  font-size: 2.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a1a;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s;
+  padding: 0;
+  padding-bottom: 3px; /* optical centre for ‹ › */
+}
+.tikkun-arrow:hover:not(:disabled) {
+  background: #fffbe5;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1a1a1a;
+}
+.tikkun-arrow:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.tikkun-arrow-side {
+  position: sticky;
+  top: calc(50vh - 30px);
+  align-self: flex-start;
+}
+
+.tikkun-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.tikkun-card {
+  border: 2px solid #1a1a1a;
+  border-radius: 14px;
+  box-shadow: 5px 5px 0 #1a1a1a;
+  background: #fff;
+  overflow: hidden;
+}
+
+.tikkun-card-body {
+  padding: 30px 28px 24px;
+}
+
+.tikkun-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.tikkun-title {
+  font-family: "Frank Ruhl Libre", serif;
+  font-weight: 900;
+  font-size: 1.75rem;
+  margin: 0 0 20px;
+  color: var(--ink);
+}
+.tikkun-title-cover {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+}
+
+.tikkun-subtitle {
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 20px;
+  font-size: 0.95rem;
+}
+
+.tikkun-body p {
+  margin: 0 0 1.1em;
+  line-height: 1.7;
+  font-size: 1.02rem;
+}
+.tikkun-body p:last-child { margin-bottom: 0; }
+
+.tikkun-quote {
+  margin: 1em 0;
+  padding: 14px 20px 10px;
+  border-left: 4px solid var(--accent);
+  background: #f4faf7;
+  border-radius: 0 8px 8px 0;
+}
+.tikkun-quote p {
+  margin: 0 0 0.3em;
+  font-style: italic;
+  line-height: 1.6;
+}
+.tikkun-citation {
+  font-style: normal !important;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.tikkun-footer {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-family: "Frank Ruhl Libre", serif;
+  text-align: center;
+}
+
+.tikkun-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-top: 2px solid #1a1a1a;
+}
+
+.tikkun-progress {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tikkun-mobile-nav {
+  display: none;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+@media (max-width: 580px) {
+  .tikkun-arrow-side { display: none; }
+  .tikkun-mobile-nav { display: flex; }
+  .tikkun-mobile-nav .tikkun-arrow {
+    width: 68px;
+    height: 68px;
+    font-size: 2.6rem;
+  }
+  .tikkun-card-body { padding: 22px 18px 18px; }
+  .tikkun-title { font-size: 1.5rem; }
+  .tikkun-title-cover { font-size: 1.8rem; }
+}
