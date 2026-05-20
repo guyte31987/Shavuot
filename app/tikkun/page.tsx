@@ -162,9 +162,10 @@ export default function TikkunPage() {
   const readerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
+  const shouldScroll = useRef(false);
 
-  const prev = useCallback(() => setIdx((i) => Math.max(0, i - 1)), []);
-  const next = useCallback(() => setIdx((i) => Math.min(total - 1, i + 1)), [total]);
+  const prev = useCallback(() => { shouldScroll.current = true; setIdx((i) => Math.max(0, i - 1)); }, []);
+  const next = useCallback(() => { shouldScroll.current = true; setIdx((i) => Math.min(total - 1, i + 1)); }, [total]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -176,7 +177,10 @@ export default function TikkunPage() {
   }, [prev, next]);
 
   useEffect(() => {
-    readerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (shouldScroll.current) {
+      readerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      shouldScroll.current = false;
+    }
   }, [idx]);
 
   const s = SECTIONS[idx];
