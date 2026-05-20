@@ -11,10 +11,12 @@ import { useEffect, useRef } from "react";
 export function ShavuotHeader({
   title = "Shavuot",
   strap = "22 May · Hackney Wick · E9",
+  lines,
   height = 240,
 }: {
   title?: string;
   strap?: string;
+  lines?: string[];
   height?: number;
 }) {
   const backMidRef = useRef<SVGGElement | null>(null);
@@ -154,8 +156,19 @@ export function ShavuotHeader({
       <Butterfly cls="bf-5" body="#c8e0a0" outline="#4a6526" />
 
       <div className="sh-title">
-        <div className="word">{title}</div>
-        {strap && <div className="strap">{strap}</div>}
+        {lines ? (
+          <>
+            <div className="word">{lines[0]}</div>
+            {lines.slice(1).map((l, i) => (
+              <div key={i} className="strap" style={i > 0 ? { marginTop: 5 } : undefined}>{l}</div>
+            ))}
+          </>
+        ) : (
+          <>
+            <div className="word">{title}</div>
+            {strap && <div className="strap">{strap}</div>}
+          </>
+        )}
       </div>
 
       <style>{CSS}</style>

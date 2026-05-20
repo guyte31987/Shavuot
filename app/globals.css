@@ -1018,6 +1018,7 @@ img.avatar { display: block; }
   display: flex;
   align-items: flex-start;
   gap: 14px;
+  scroll-margin-top: 12px;
 }
 
 .tikkun-arrow {
@@ -1153,22 +1154,38 @@ img.avatar { display: block; }
   letter-spacing: 0.08em;
 }
 
+.tikkun-swipe-hint {
+  display: none;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
 .tikkun-mobile-nav {
   display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.tikkun-mobile-btns {
+  display: flex;
   gap: 16px;
   justify-content: center;
-  margin-top: 18px;
 }
 
 @media (max-width: 580px) {
   .tikkun-arrow-side { display: none; }
   .tikkun-mobile-nav { display: flex; }
-  .tikkun-mobile-nav .tikkun-arrow {
+  .tikkun-swipe-hint { display: block; }
+  .tikkun-mobile-btns .tikkun-arrow {
     width: 68px;
     height: 68px;
     font-size: 2.6rem;
   }
   .tikkun-card-body { padding: 22px 18px 18px; }
   .tikkun-title { font-size: 1.5rem; }
-  .tikkun-title-cover { font-size: 1.8rem; }
 }
