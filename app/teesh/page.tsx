@@ -13,9 +13,19 @@ export default function TeeshPage() {
   const [pickedFile, setPickedFile] = useState<File | null>(null);
   const [pending, setPending] = useState<{ dataUrl: string; size: number } | null>(null);
   const [caption, setCaption] = useState("");
+  const [lightbox, setLightbox] = useState<Pic | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => subscribePics(setPics), []);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightbox(null);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     setError("");
@@ -145,7 +155,13 @@ export default function TeeshPage() {
           <div className="teesh-grid">
             {pics.map((p) => (
               <figure className="teesh-card" key={p.id}>
-                <img src={p.dataUrl} alt={p.caption || "Teesh"} loading="lazy" />
+                <img
+                  src={p.dataUrl}
+                  alt={p.caption || "Teesh"}
+                  loading="lazy"
+                  onClick={() => setLightbox(p)}
+                  className="teesh-card-img"
+                />
                 {p.uploadedBy === id && (
                   <button
                     className="teesh-x"
@@ -169,6 +185,23 @@ export default function TeeshPage() {
           </div>
         )}
       </div>
+
+      {lightbox && (
+        <div className="teesh-lightbox" onClick={() => setLightbox(null)}>
+          <div className="teesh-lightbox-inner" onClick={(e) => e.stopPropagation()}>
+            <button className="teesh-lightbox-close" onClick={() => setLightbox(null)} aria-label="Close">×</button>
+            <img src={lightbox.dataUrl} alt={lightbox.caption || "Teesh"} />
+            {(lightbox.caption || lightbox.uploadedByName) && (
+              <div className="teesh-lightbox-caption">
+                {lightbox.caption && <strong>{lightbox.caption}</strong>}
+                <span className="teesh-meta">
+                  by {lightbox.uploadedByName} · {new Date(lightbox.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }
